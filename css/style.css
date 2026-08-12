@@ -1,0 +1,481 @@
+/* ===================================================================
+   LifeSim — Main Stylesheet (mobile-first, responsive)
+   =================================================================== */
+
+/* -------------------------------------------------------------------
+   Reset / Base
+   ------------------------------------------------------------------- */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+                 Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: #0d0d1a;
+    color: #e0e0e0;
+    min-height: 100vh;
+    line-height: 1.6;
+}
+
+a {
+    color: #63b3ed;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+h1, h2, h3 {
+    line-height: 1.25;
+    color: #f0f0f0;
+}
+
+ul, ol {
+    padding-left: 1.4rem;
+}
+
+button {
+    font-family: inherit;
+}
+
+/* -------------------------------------------------------------------
+   Application Layout
+   ------------------------------------------------------------------- */
+
+.app-layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Header */
+.app-header {
+    background: #16213e;
+    border-bottom: 2px solid #0f3460;
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.app-header__title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #e94560;
+    letter-spacing: 0.02em;
+}
+
+.app-header__nav {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.app-header__nav a,
+.app-header__nav button {
+    color: #a0aec0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    transition: color 0.15s, background 0.15s;
+}
+
+.app-header__nav a:hover,
+.app-header__nav button:hover {
+    color: #fff;
+    background: #234069;
+    text-decoration: none;
+}
+
+/* Save indicator */
+.save-indicator {
+    font-size: 0.8rem;
+    color: #9ae6b4;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    background: #1f3b2f;
+    display: none;
+}
+
+.save-indicator.visible {
+    display: inline-block;
+}
+
+/* Main area */
+.app-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    max-width: 800px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 1.25rem 1rem;
+    gap: 1.25rem;
+}
+
+/* Footer */
+.app-footer {
+    background: #16213e;
+    border-top: 1px solid #0f3460;
+    text-align: center;
+    padding: 0.75rem;
+    font-size: 0.8rem;
+    color: #4a5568;
+}
+
+/* -------------------------------------------------------------------
+   Character Panel
+   ------------------------------------------------------------------- */
+
+.character-panel {
+    background: #16213e;
+    border: 1px solid #0f3460;
+    border-radius: 8px;
+    padding: 1.25rem;
+}
+
+.character-panel__name {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #f0f0f0;
+    margin-bottom: 0.5rem;
+}
+
+.character-panel__age {
+    font-size: 1rem;
+    color: #a0aec0;
+    margin-bottom: 1rem;
+}
+
+.attributes-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.6rem;
+}
+
+@media (min-width: 480px) {
+    .attributes-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.attribute-item {
+    background: #0f3460;
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.attribute-item__label {
+    font-size: 0.75rem;
+    color: #718096;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.attribute-item__value {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #e2e8f0;
+}
+
+/* -------------------------------------------------------------------
+   Event / Message Feed
+   ------------------------------------------------------------------- */
+
+.event-feed {
+    background: #16213e;
+    border: 1px solid #0f3460;
+    border-radius: 8px;
+    padding: 1.25rem;
+    min-height: 140px;
+}
+
+.event-feed__title {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #718096;
+    margin-bottom: 0.75rem;
+}
+
+.event-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.event-list__item {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: #e2e8f0;
+    padding: 0.5rem 0.75rem;
+    border-left: 3px solid #e94560;
+    background: #0f3460;
+    border-radius: 0 4px 4px 0;
+}
+
+/* Event decision prompt */
+.event-decision {
+    background: #16213e;
+    border: 1px solid #e94560;
+    border-radius: 8px;
+    padding: 1.25rem;
+}
+
+.event-decision__description {
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+.event-decision__choices {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.choice-btn {
+    padding: 0.65rem 1rem;
+    background: #0f3460;
+    color: #e0e0e0;
+    border: 1px solid #234069;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.15s, border-color 0.15s;
+}
+
+.choice-btn:hover {
+    background: #234069;
+    border-color: #63b3ed;
+}
+
+/* -------------------------------------------------------------------
+   Action Bar
+   ------------------------------------------------------------------- */
+
+.action-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    border: none;
+    transition: background 0.15s, transform 0.1s;
+    font-family: inherit;
+}
+
+.btn:active {
+    transform: scale(0.97);
+}
+
+.btn-primary {
+    background: #e94560;
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background: #c73652;
+}
+
+.btn-secondary {
+    background: #234069;
+    color: #e0e0e0;
+}
+
+.btn-secondary:hover {
+    background: #2d5080;
+}
+
+.btn-ghost {
+    background: transparent;
+    color: #a0aec0;
+    border: 1px solid #234069;
+}
+
+.btn-ghost:hover {
+    background: #16213e;
+    color: #e0e0e0;
+}
+
+/* -------------------------------------------------------------------
+   Start / New Game Screen
+   ------------------------------------------------------------------- */
+
+.start-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1.5rem;
+    padding: 2rem 1rem;
+}
+
+.start-screen__title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #e94560;
+}
+
+.start-screen__tagline {
+    color: #a0aec0;
+    font-size: 1.05rem;
+    max-width: 420px;
+}
+
+.start-screen__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+    max-width: 300px;
+}
+
+/* -------------------------------------------------------------------
+   Modal / Overlay
+   ------------------------------------------------------------------- */
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+    padding: 1rem;
+}
+
+.modal-overlay.hidden {
+    display: none;
+}
+
+.modal {
+    background: #16213e;
+    border: 1px solid #0f3460;
+    border-radius: 10px;
+    padding: 1.75rem;
+    max-width: 500px;
+    width: 100%;
+}
+
+.modal__title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.modal__body {
+    margin-bottom: 1.25rem;
+    color: #a0aec0;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.modal__actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+/* -------------------------------------------------------------------
+   Toast notification
+   ------------------------------------------------------------------- */
+
+.toast-container {
+    position: fixed;
+    bottom: 1.25rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 300;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    pointer-events: none;
+}
+
+.toast {
+    background: #234069;
+    color: #e2e8f0;
+    padding: 0.6rem 1.2rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    opacity: 0;
+    transition: opacity 0.3s;
+    white-space: nowrap;
+}
+
+.toast.show {
+    opacity: 1;
+}
+
+/* -------------------------------------------------------------------
+   Utility
+   ------------------------------------------------------------------- */
+
+.hidden {
+    display: none !important;
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+/* -------------------------------------------------------------------
+   Responsive adjustments
+   ------------------------------------------------------------------- */
+
+@media (min-width: 600px) {
+    .app-main {
+        padding: 1.75rem 1.5rem;
+    }
+
+    .start-screen__title {
+        font-size: 3rem;
+    }
+}
+
+@media (min-width: 900px) {
+    .app-main {
+        padding: 2rem;
+    }
+}
