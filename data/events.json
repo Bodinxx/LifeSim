@@ -1,0 +1,82 @@
+[
+    {
+        "id": "a1b2c3d4-0001-4000-8000-000000000001",
+        "name": "Found a Wallet",
+        "description": "You find a wallet on the street with $50 inside and an ID. What do you do?",
+        "enabled": true,
+        "choices": [
+            {
+                "text": "Return it to the owner",
+                "outcome": "You returned the wallet. The owner was grateful, and your reputation improved."
+            },
+            {
+                "text": "Keep the money",
+                "outcome": "You kept the $50 but felt guilty about it."
+            },
+            {
+                "text": "Hand it in to the police",
+                "outcome": "You handed the wallet in to the police. A responsible choice."
+            }
+        ],
+        "created_at": "2026-01-01T00:00:00Z",
+        "updated_at": "2026-01-01T00:00:00Z"
+    },
+    {
+        "id": "a1b2c3d4-0002-4000-8000-000000000002",
+        "name": "Unexpected Bonus",
+        "description": "Your employer surprises everyone with a small bonus at the end of the month.",
+        "enabled": true,
+        "choices": [],
+        "created_at": "2026-01-01T00:00:00Z",
+        "updated_at": "2026-01-01T00:00:00Z"
+    },
+    {
+        "id": "a1b2c3d4-0003-4000-8000-000000000003",
+        "name": "Old Friend Reaches Out",
+        "description": "Someone you lost touch with sends you a message out of the blue. How do you respond?",
+        "enabled": true,
+        "choices": [
+            {
+                "text": "Catch up warmly",
+                "outcome": "You rekindled an old friendship. Your happiness increased."
+            },
+            {
+                "text": "Keep it brief",
+                "outcome": "You replied politely but didn't invest much time."
+            },
+            {
+                "text": "Ignore the message",
+                "outcome": "You chose not to respond. The opportunity passed."
+            }
+        ],
+        "created_at": "2026-01-01T00:00:00Z",
+        "updated_at": "2026-01-01T00:00:00Z"
+    },
+    {
+        "id": "a1b2c3d4-0004-4000-8000-000000000004",
+        "name": "Minor Illness",
+        "description": "You come down with a cold and spend a few days resting.",
+        "enabled": true,
+        "choices": [],
+        "created_at": "2026-01-01T00:00:00Z",
+        "updated_at": "2026-01-01T00:00:00Z"
+    },
+    {
+        "id": "a1b2c3d4-0005-4000-8000-000000000005",
+        "name": "Community Event",
+        "description": "Your neighbourhood is hosting a community clean-up day. Will you join?",
+        "enabled": true,
+        "choices": [
+            {
+                "text": "Volunteer for the day",
+                "outcome": "You volunteered and felt great about contributing. Reputation improved."
+            },
+            {
+                "text": "Watch from afar",
+                "outcome": "You stayed home but watched the event from your window."
+            }
+        ],
+        "created_at": "2026-01-01T00:00:00Z",
+        "updated_at": "2026-01-01T00:00:00Z"
+    }
+]
