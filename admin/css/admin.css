@@ -148,6 +148,12 @@
     font-family: inherit;
 }
 
+.form-help {
+    margin: -0.65rem 0 1rem;
+    color: #718096;
+    font-size: 0.8rem;
+}
+
 .checkbox-label {
     display: flex !important;
     align-items: center;
@@ -189,6 +195,10 @@
 }
 
 .choice-row input {
+    margin-bottom: 0.4rem !important;
+}
+
+.choice-row textarea {
     margin-bottom: 0.4rem !important;
 }
 
@@ -389,4 +399,40 @@
 .event-preview-choices li {
     margin-bottom: 0.4rem;
     line-height: 1.5;
+}
+
+.event-preview-consequence {
+    margin-top: 0.35rem;
+    color: #9ae6b4;
+    font-size: 0.9rem;
+}
+
+.feature-context-menu {
+    position: absolute;
+    z-index: 500;
+    min-width: 220px;
+    max-width: 280px;
+    background: #16213e;
+    border: 1px solid #234069;
+    border-radius: 8px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+    padding: 0.85rem 1rem;
+}
+
+.feature-context-menu p {
+    margin: 0 0 0.5rem;
+    color: #f0f0f0;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.feature-context-menu ul {
+    margin: 0;
+    padding-left: 1rem;
+    color: #a0aec0;
+    font-size: 0.85rem;
+}
+
+.feature-context-menu li + li {
+    margin-top: 0.2rem;
 }

@@ -4,18 +4,31 @@
         "name": "Found a Wallet",
         "description": "You find a wallet on the street with $50 inside and an ID. What do you do?",
         "enabled": true,
+        "consequence": {},
         "choices": [
             {
                 "text": "Return it to the owner",
-                "outcome": "You returned the wallet. The owner was grateful, and your reputation improved."
+                "outcome": "You returned the wallet. The owner was grateful, and your reputation improved.",
+                "consequence": {
+                    "happiness": 5,
+                    "reputation": 10
+                }
             },
             {
                 "text": "Keep the money",
-                "outcome": "You kept the $50 but felt guilty about it."
+                "outcome": "You kept the $50 but felt guilty about it.",
+                "consequence": {
+                    "money": 50,
+                    "happiness": -10
+                }
             },
             {
                 "text": "Hand it in to the police",
-                "outcome": "You handed the wallet in to the police. A responsible choice."
+                "outcome": "You handed the wallet in to the police. A responsible choice.",
+                "consequence": {
+                    "happiness": 5,
+                    "reputation": 5
+                }
             }
         ],
         "created_at": "2026-01-01T00:00:00Z",
@@ -26,6 +39,9 @@
         "name": "Unexpected Bonus",
         "description": "Your employer surprises everyone with a small bonus at the end of the month.",
         "enabled": true,
+        "consequence": {
+            "money": 600
+        },
         "choices": [],
         "created_at": "2026-01-01T00:00:00Z",
         "updated_at": "2026-01-01T00:00:00Z"
@@ -35,18 +51,29 @@
         "name": "Old Friend Reaches Out",
         "description": "Someone you lost touch with sends you a message out of the blue. How do you respond?",
         "enabled": true,
+        "consequence": {},
         "choices": [
             {
                 "text": "Catch up warmly",
-                "outcome": "You rekindled an old friendship. Your happiness increased."
+                "outcome": "You rekindled an old friendship. Your happiness increased.",
+                "consequence": {
+                    "happiness": 8,
+                    "stress": -3
+                }
             },
             {
                 "text": "Keep it brief",
-                "outcome": "You replied politely but didn't invest much time."
+                "outcome": "You replied politely but didn't invest much time.",
+                "consequence": {
+                    "happiness": 1
+                }
             },
             {
                 "text": "Ignore the message",
-                "outcome": "You chose not to respond. The opportunity passed."
+                "outcome": "You chose not to respond. The opportunity passed.",
+                "consequence": {
+                    "happiness": -5
+                }
             }
         ],
         "created_at": "2026-01-01T00:00:00Z",
@@ -57,6 +84,11 @@
         "name": "Minor Illness",
         "description": "You come down with a cold and spend a few days resting.",
         "enabled": true,
+        "consequence": {
+            "health": -10,
+            "happiness": -5,
+            "stress": 5
+        },
         "choices": [],
         "created_at": "2026-01-01T00:00:00Z",
         "updated_at": "2026-01-01T00:00:00Z"
@@ -66,14 +98,20 @@
         "name": "Community Event",
         "description": "Your neighbourhood is hosting a community clean-up day. Will you join?",
         "enabled": true,
+        "consequence": {},
         "choices": [
             {
                 "text": "Volunteer for the day",
-                "outcome": "You volunteered and felt great about contributing. Reputation improved."
+                "outcome": "You volunteered and felt great about contributing. Reputation improved.",
+                "consequence": {
+                    "happiness": 8,
+                    "reputation": 10
+                }
             },
             {
                 "text": "Watch from afar",
-                "outcome": "You stayed home but watched the event from your window."
+                "outcome": "You stayed home but watched the event from your window.",
+                "consequence": {}
             }
         ],
         "created_at": "2026-01-01T00:00:00Z",

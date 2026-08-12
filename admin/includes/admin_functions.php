@@ -14,7 +14,8 @@ require_once dirname(__DIR__, 2) . '/includes/functions.php';
  */
 function get_all_events(): array
 {
-    return read_json_file(EVENTS_FILE, []);
+    $events = read_json_file(EVENTS_FILE, []);
+    return array_map('normalise_event', array_values(array_filter(is_array($events) ? $events : [], 'is_array')));
 }
 
 /**
@@ -48,10 +49,147 @@ function blank_event(): array
         'name'        => '',
         'description' => '',
         'enabled'     => true,
+        'consequence' => [],
         'choices'     => [],
         'created_at'  => now_iso(),
         'updated_at'  => now_iso(),
     ];
+}
+
+/**
+ * Features that event consequences are allowed to modify.
+ */
+function modifiable_event_features(): array
+{
+    return [
+        'health'       => 'Health',
+        'happiness'    => 'Happiness',
+        'intelligence' => 'Intelligence',
+        'appearance'   => 'Appearance',
+        'discipline'   => 'Discipline',
+        'stress'       => 'Stress',
+        'reputation'   => 'Reputation',
+        'money'        => 'Money',
+        'annualIncome' => 'Annual income',
+    ];
+}
+
+/**
+ * Normalise an event record loaded from JSON.
+ */
+function normalise_event(array $event): array
+{
+    $event['consequence'] = sanitise_consequence_array($event['consequence'] ?? []);
+    $event['choices'] = array_values(array_map(static function (array $choice): array {
+        return [
+            'text'        => trim((string)($choice['text'] ?? '')),
+            'outcome'     => trim((string)($choice['outcome'] ?? '')),
+            'consequence' => sanitise_consequence_array($choice['consequence'] ?? []),
+        ];
+    }, array_values(array_filter($event['choices'] ?? [], 'is_array'))));
+
+    return $event;
+}
+
+/**
+ * Keep only supported numeric consequence values.
+ */
+function sanitise_consequence_array($consequence): array
+{
+    if (!is_array($consequence)) {
+        return [];
+    }
+
+    $allowed = modifiable_event_features();
+    $cleaned = [];
+
+    foreach ($consequence as $feature => $delta) {
+        if (!array_key_exists($feature, $allowed) || !is_numeric($delta)) {
+            continue;
+        }
+
+        $number = $delta + 0;
+        $cleaned[$feature] = (int)$number == $number ? (int)$number : (float)$number;
+    }
+
+    return $cleaned;
+}
+
+/**
+ * Parse a consequence JSON object from form input.
+ */
+function parse_consequence_input(string $raw, string $label): array
+{
+    $raw = trim($raw);
+    if ($raw === '') {
+        return ['value' => [], 'errors' => []];
+    }
+
+    $decoded = json_decode($raw, true);
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        return ['value' => [], 'errors' => [$label . ' must be valid JSON.']];
+    }
+
+    if (!is_array($decoded) || consequence_array_is_list($decoded)) {
+        return ['value' => [], 'errors' => [$label . ' must be a JSON object keyed by feature name.']];
+    }
+
+    $allowed = modifiable_event_features();
+    $errors  = [];
+    $value   = [];
+
+    foreach ($decoded as $feature => $delta) {
+        if (!array_key_exists($feature, $allowed)) {
+            $errors[] = $label . ' contains an unsupported feature: ' . $feature . '.';
+            continue;
+        }
+        if (!is_numeric($delta)) {
+            $errors[] = $label . ' for ' . $allowed[$feature] . ' must be numeric.';
+            continue;
+        }
+
+        $number = $delta + 0;
+        $value[$feature] = (int)$number == $number ? (int)$number : (float)$number;
+    }
+
+    return ['value' => $value, 'errors' => $errors];
+}
+
+/**
+ * Compatibility helper for identifying list-style arrays.
+ */
+function consequence_array_is_list(array $value): bool
+{
+    if ($value === []) {
+        return true;
+    }
+
+    return array_keys($value) === range(0, count($value) - 1);
+}
+
+/**
+ * Format a consequence for preview output.
+ */
+function format_consequence_summary(array $consequence): string
+{
+    if (!$consequence) {
+        return '';
+    }
+
+    $labels = modifiable_event_features();
+    $parts  = [];
+
+    foreach ($consequence as $feature => $delta) {
+        if (!array_key_exists($feature, $labels) || !is_numeric($delta)) {
+            continue;
+        }
+
+        $number = $delta + 0;
+        $sign   = $number > 0 ? '+' : '';
+        $parts[] = $labels[$feature] . ' ' . $sign . $number;
+    }
+
+    return implode(', ', $parts);
 }
 
 /**
@@ -75,6 +213,7 @@ function validate_event(array $event): array
  */
 function upsert_event(array $event): array
 {
+    $event = normalise_event($event);
     $errors = validate_event($event);
     if ($errors) {
         return $errors;
@@ -124,6 +263,7 @@ function toggle_event(string $id): bool
 function event_from_post(string $id = ''): array
 {
     $event = blank_event();
+    $errors = [];
     if ($id !== '') {
         $event['id'] = $id;
     }
@@ -131,19 +271,32 @@ function event_from_post(string $id = ''): array
     $event['name']        = trim($_POST['name'] ?? '');
     $event['description'] = trim($_POST['description'] ?? '');
     $event['enabled']     = isset($_POST['enabled']);
+    $event_consequence    = parse_consequence_input((string)($_POST['consequence_json'] ?? ''), 'Automatic event consequence');
+    $event['consequence'] = $event_consequence['value'];
+    $errors               = array_merge($errors, $event_consequence['errors']);
 
-    // Parse choices: parallel arrays choices_text[] and choices_outcome[]
-    $choices_text    = $_POST['choices_text'] ?? [];
-    $choices_outcome = $_POST['choices_outcome'] ?? [];
+    // Parse choices: parallel arrays choices_text[] / choices_outcome[] / choices_consequence[]
+    $choices_text        = $_POST['choices_text'] ?? [];
+    $choices_outcome     = $_POST['choices_outcome'] ?? [];
+    $choices_consequence = $_POST['choices_consequence'] ?? [];
     $choices = [];
     foreach ($choices_text as $i => $text) {
         $text    = trim($text);
         $outcome = trim($choices_outcome[$i] ?? '');
+        $parsed_consequence = parse_consequence_input(
+            (string)($choices_consequence[$i] ?? ''),
+            'Choice consequence #' . ($i + 1)
+        );
+        $errors = array_merge($errors, $parsed_consequence['errors']);
         if ($text !== '') {
-            $choices[] = ['text' => $text, 'outcome' => $outcome];
+            $choices[] = [
+                'text'        => $text,
+                'outcome'     => $outcome,
+                'consequence' => $parsed_consequence['value'],
+            ];
         }
     }
     $event['choices'] = $choices;
 
-    return $event;
+    return ['event' => $event, 'errors' => $errors];
 }
