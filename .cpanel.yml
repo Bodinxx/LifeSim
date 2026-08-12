@@ -1,0 +1,6 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/dlvippt8/public_html/LifeSim/
+    - /bin/mkdir -p "$DEPLOYPATH"
+    - /bin/cp -R public/. "$DEPLOYPATH"
