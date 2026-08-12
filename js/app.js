@@ -8,6 +8,18 @@
 const App = (() => {
     'use strict';
 
+    const CONSEQUENCE_LABELS = {
+        health: 'Health',
+        happiness: 'Happiness',
+        intelligence: 'Intelligence',
+        appearance: 'Appearance',
+        discipline: 'Discipline',
+        stress: 'Stress',
+        reputation: 'Reputation',
+        money: 'Money',
+        annualIncome: 'Annual income',
+    };
+
     // -------------------------------------------------------------------
     // State
     // -------------------------------------------------------------------
@@ -150,7 +162,7 @@ const App = (() => {
             _triggerEvent(event);
         }
 
-        SaveSystem.scheduleAutoSave(c, _state.modules);
+        SaveSystem.scheduleAutoSave(_state.character, _state.modules);
     }
 
     // -------------------------------------------------------------------
@@ -167,7 +179,14 @@ const App = (() => {
     function _triggerEvent(event) {
         if (!event.choices || !event.choices.length) {
             // Automatic event — no player choice needed
-            _appendEvent(event.description);
+            _state.character = _applyEventConsequence(
+                _state.character,
+                event.consequence,
+                [event.description, _formatConsequence(event.consequence)],
+                event.name || event.description
+            );
+            _renderGame();
+            SaveSystem.scheduleAutoSave(_state.character, _state.modules);
             return;
         }
         // Decision event
@@ -177,11 +196,13 @@ const App = (() => {
 
     function _handleChoice(choice) {
         _clearDecision();
-        const c = _state.character;
-        if (choice.outcome) {
-            _appendEvent(choice.outcome);
-        }
-        _state.character = Character.recordEvent(c, choice.text);
+        _state.character = _applyEventConsequence(
+            _state.character,
+            choice.consequence,
+            [choice.outcome, _formatConsequence(choice.consequence)],
+            choice.text
+        );
+        _renderGame();
         SaveSystem.scheduleAutoSave(_state.character, _state.modules);
         _state.pendingEvent = null;
     }
@@ -241,6 +262,38 @@ const App = (() => {
         while (list.children.length > 20) {
             list.removeChild(list.lastChild);
         }
+    }
+
+    function _appendEventEntries(entries) {
+        entries
+            .filter((entry) => typeof entry === 'string' && entry.trim() !== '')
+            .reverse()
+            .forEach((entry) => _appendEvent(entry));
+    }
+
+    function _applyEventConsequence(character, consequence, entries, historyText) {
+        _appendEventEntries(entries);
+        let next = Character.applyConsequence(character, consequence);
+        if (historyText) {
+            next = Character.recordEvent(next, historyText);
+        }
+        return next;
+    }
+
+    function _formatConsequence(consequence) {
+        if (!consequence || typeof consequence !== 'object' || Array.isArray(consequence)) {
+            return '';
+        }
+
+        const parts = Object.entries(consequence)
+            .filter(([key, delta]) => CONSEQUENCE_LABELS[key] && Number.isFinite(Number(delta)) && Number(delta) !== 0)
+            .map(([key, delta]) => {
+                const amount = Number(delta);
+                const sign = amount > 0 ? '+' : '';
+                return `${CONSEQUENCE_LABELS[key]} ${sign}${amount}`;
+            });
+
+        return parts.length ? parts.join(', ') + '.' : '';
     }
 
     function _setText(id, value) {

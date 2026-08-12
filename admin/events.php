@@ -17,20 +17,25 @@ $action = $_GET['action'] ?? 'list';
 $id     = $_GET['id'] ?? '';
 $errors = [];
 $event  = blank_event();
+$modifiable_features = modifiable_event_features();
 
 // -------------------------------------------------------------------
 // Handle POST: save event
 // -------------------------------------------------------------------
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $posted_id = trim($_POST['event_id'] ?? '');
-    $event     = event_from_post($posted_id);
-    $errors    = upsert_event($event);
+    $posted    = event_from_post($posted_id);
+    $event     = $posted['event'];
+    $errors    = $posted['errors'];
 
     if (!$errors) {
-        $log_action = $posted_id !== '' ? 'event_updated' : 'event_created';
-        admin_log($log_action, ['event_id' => $event['id'], 'name' => $event['name']]);
-        header('Location: events.php?saved=1');
-        exit;
+        $errors = upsert_event($event);
+        if (!$errors) {
+            $log_action = $posted_id !== '' ? 'event_updated' : 'event_created';
+            admin_log($log_action, ['event_id' => $event['id'], 'name' => $event['name']]);
+            header('Location: events.php?saved=1');
+            exit;
+        }
     }
     $action = ($posted_id !== '') ? 'edit' : 'add';
 }
@@ -149,6 +154,14 @@ $events = get_all_events();
         <label for="description">Description <span class="required">*</span></label>
         <textarea id="description" name="description" rows="4" required><?= h($event['description']) ?></textarea>
 
+        <label for="consequence_json">Automatic consequence (JSON object)</label>
+        <textarea id="consequence_json"
+                  name="consequence_json"
+                  rows="4"
+                  class="consequence-input"
+                  data-feature-list="modifiable"><?= h(!empty($event['consequence']) ? json_encode($event['consequence'], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) : '') ?></textarea>
+        <p class="form-help">Applies when the event has no choices. Right-click this field to view modifiable features.</p>
+
         <label class="checkbox-label">
             <input type="checkbox" name="enabled" value="1"
                    <?= !empty($event['enabled']) ? 'checked' : '' ?>>
@@ -159,7 +172,7 @@ $events = get_all_events();
             <legend>Choices</legend>
             <div id="choices-list">
             <?php
-            $choices = $event['choices'] ?: [['text' => '', 'outcome' => '']];
+            $choices = $event['choices'] ?: [['text' => '', 'outcome' => '', 'consequence' => []]];
             foreach ($choices as $i => $choice):
             ?>
                 <div class="choice-row" data-index="<?= $i ?>">
@@ -169,6 +182,12 @@ $events = get_all_events();
                     <label>Outcome description</label>
                     <input type="text" name="choices_outcome[]"
                            value="<?= h($choice['outcome'] ?? '') ?>">
+                    <label>Consequence (JSON object)</label>
+                    <textarea name="choices_consequence[]"
+                              rows="3"
+                              class="consequence-input"
+                              data-feature-list="modifiable"><?= h(!empty($choice['consequence']) ? json_encode($choice['consequence'], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) : '') ?></textarea>
+                    <p class="form-help">Right-click to view modifiable features.</p>
                     <button type="button" class="remove-choice admin-button-small"
                             onclick="removeChoice(this)">Remove</button>
                 </div>
@@ -208,12 +227,20 @@ $events = get_all_events();
                     <?php if (!empty($choice['outcome'])): ?>
                         — <em><?= h($choice['outcome']) ?></em>
                     <?php endif; ?>
+                    <?php $choice_summary = format_consequence_summary($choice['consequence'] ?? []); ?>
+                    <?php if ($choice_summary !== ''): ?>
+                        <div class="event-preview-consequence"><?= h($choice_summary) ?></div>
+                    <?php endif; ?>
                 </li>
             <?php endforeach; ?>
             </ul>
         </div>
         <?php else: ?>
             <p><em>No choices defined — this event happens automatically.</em></p>
+            <?php $event_summary = format_consequence_summary($preview['consequence'] ?? []); ?>
+            <?php if ($event_summary !== ''): ?>
+                <p class="event-preview-consequence"><strong>Consequence:</strong> <?= h($event_summary) ?></p>
+            <?php endif; ?>
         <?php endif; ?>
     </div>
     <?php } ?>
@@ -222,9 +249,32 @@ $events = get_all_events();
 
 </main>
 
+<div id="feature-context-menu" class="feature-context-menu hidden" role="note" aria-live="polite">
+    <p>Modifiable features</p>
+    <ul></ul>
+</div>
 <script>
 (function () {
     'use strict';
+
+    const modifiableFeatures = <?= json_encode(array_map(
+        static fn(string $key, string $label): array => ['key' => $key, 'label' => $label],
+        array_keys($modifiable_features),
+        array_values($modifiable_features)
+    ), JSON_UNESCAPED_SLASHES) ?>;
+    const featureMenu = document.getElementById('feature-context-menu');
+
+    function hideFeatureMenu() {
+        if (!featureMenu) return;
+        featureMenu.classList.add('hidden');
+    }
+
+    function showFeatureMenu(x, y) {
+        if (!featureMenu) return;
+        featureMenu.style.left = `${x}px`;
+        featureMenu.style.top = `${y}px`;
+        featureMenu.classList.remove('hidden');
+    }
 
     document.getElementById('add-choice')?.addEventListener('click', function () {
         const list = document.getElementById('choices-list');
@@ -237,6 +287,10 @@ $events = get_all_events();
             <input type="text" name="choices_text[]" value="">
             <label>Outcome description</label>
             <input type="text" name="choices_outcome[]" value="">
+            <label>Consequence (JSON object)</label>
+            <textarea name="choices_consequence[]" rows="3"
+                      class="consequence-input" data-feature-list="modifiable"></textarea>
+            <p class="form-help">Right-click to view modifiable features.</p>
             <button type="button" class="remove-choice admin-button-small"
                     onclick="removeChoice(this)">Remove</button>
         `;
@@ -249,8 +303,38 @@ $events = get_all_events();
             row.remove();
         } else {
             row.querySelectorAll('input').forEach(i => i.value = '');
+            row.querySelectorAll('textarea').forEach(i => i.value = '');
         }
     };
+
+    document.addEventListener('contextmenu', function (event) {
+        const target = event.target.closest('.consequence-input');
+        if (!target) {
+            hideFeatureMenu();
+            return;
+        }
+
+        event.preventDefault();
+
+        if (featureMenu) {
+            const list = featureMenu.querySelector('ul');
+            if (list) {
+                list.innerHTML = modifiableFeatures
+                    .map((feature) => `<li><strong>${feature.label}</strong> <span>(${feature.key})</span></li>`)
+                    .join('');
+            }
+        }
+
+        showFeatureMenu(event.pageX, event.pageY);
+    });
+
+    document.addEventListener('click', function (event) {
+        if (!featureMenu || featureMenu.contains(event.target)) return;
+        hideFeatureMenu();
+    });
+
+    window.addEventListener('resize', hideFeatureMenu);
+    document.addEventListener('scroll', hideFeatureMenu, true);
 }());
 </script>
 </body>

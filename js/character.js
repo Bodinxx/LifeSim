@@ -107,6 +107,49 @@ const Character = (() => {
     }
 
     /**
+     * Apply a consequence object to the character.
+     * Supported keys match the editable event consequence fields.
+     * @param {object} character
+     * @param {object} consequence
+     * @returns {object}
+     */
+    function applyConsequence(character, consequence = {}) {
+        if (!consequence || typeof consequence !== 'object' || Array.isArray(consequence)) {
+            return character;
+        }
+
+        const DIRECT_NUMERIC_ATTRS = ['money', 'annualIncome'];
+        let next = character;
+        let changed = false;
+
+        Object.entries(consequence).forEach(([attr, rawDelta]) => {
+            const delta = Number(rawDelta);
+            if (!Number.isFinite(delta) || delta === 0) {
+                return;
+            }
+
+            if (DIRECT_NUMERIC_ATTRS.includes(attr)) {
+                const current = Number(next[attr] ?? 0);
+                next = Object.assign({}, next, { [attr]: current + delta });
+                changed = true;
+                return;
+            }
+
+            const updated = adjustAttribute(next, attr, delta);
+            if (updated !== next) {
+                next = updated;
+                changed = true;
+            }
+        });
+
+        if (!changed) {
+            return character;
+        }
+
+        return Object.assign({}, next, { updatedAt: new Date().toISOString() });
+    }
+
+    /**
      * Add a memory / flag to the character.
      * @param {object} character
      * @param {string} key   Short identifier for the memory.
@@ -167,6 +210,7 @@ const Character = (() => {
         create,
         lifeStageFromAge,
         adjustAttribute,
+        applyConsequence,
         addMemory,
         hasMemory,
         recordEvent,
