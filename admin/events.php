@@ -160,7 +160,11 @@ $events = get_all_events();
                   rows="4"
                   class="consequence-input"
                   data-feature-list="modifiable"><?= h(!empty($event['consequence']) ? json_encode($event['consequence'], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) : '') ?></textarea>
-        <p class="form-help">Applies when the event has no choices. Right-click this field to view modifiable features.</p>
+        <p class="form-help">
+            Applies when the event has no choices.
+            <button type="button" class="view-features-btn admin-button-small"
+                    onclick="openFeatureMenuFor(this.closest('p').previousElementSibling)">View modifiable features</button>
+        </p>
 
         <label class="checkbox-label">
             <input type="checkbox" name="enabled" value="1"
@@ -187,7 +191,10 @@ $events = get_all_events();
                               rows="3"
                               class="consequence-input"
                               data-feature-list="modifiable"><?= h(!empty($choice['consequence']) ? json_encode($choice['consequence'], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) : '') ?></textarea>
-                    <p class="form-help">Right-click to view modifiable features.</p>
+                    <p class="form-help">
+                        <button type="button" class="view-features-btn admin-button-small"
+                                onclick="openFeatureMenuFor(this.closest('p').previousElementSibling)">View modifiable features</button>
+                    </p>
                     <button type="button" class="remove-choice admin-button-small"
                             onclick="removeChoice(this)">Remove</button>
                 </div>
@@ -290,7 +297,10 @@ $events = get_all_events();
             <label>Consequence (JSON object)</label>
             <textarea name="choices_consequence[]" rows="3"
                       class="consequence-input" data-feature-list="modifiable"></textarea>
-            <p class="form-help">Right-click to view modifiable features.</p>
+            <p class="form-help">
+                <button type="button" class="view-features-btn admin-button-small"
+                        onclick="openFeatureMenuFor(this.closest('p').previousElementSibling)">View modifiable features</button>
+            </p>
             <button type="button" class="remove-choice admin-button-small"
                     onclick="removeChoice(this)">Remove</button>
         `;
@@ -307,6 +317,30 @@ $events = get_all_events();
         }
     };
 
+    function openFeatureMenuFor(textarea, x, y) {
+        if (!textarea || !featureMenu) return;
+        const list = featureMenu.querySelector('ul');
+        if (list) {
+            list.innerHTML = modifiableFeatures
+                .map((feature) => `<li><strong>${feature.label}</strong> <span>(${feature.key})</span></li>`)
+                .join('');
+        }
+        if (x !== undefined && y !== undefined) {
+            showFeatureMenu(x, y);
+        } else {
+            const rect = textarea.getBoundingClientRect();
+            showFeatureMenu(rect.left + window.scrollX, rect.bottom + window.scrollY + 4);
+        }
+    }
+
+    window.openFeatureMenuFor = function (textarea) {
+        if (featureMenu && !featureMenu.classList.contains('hidden')) {
+            hideFeatureMenu();
+            return;
+        }
+        openFeatureMenuFor(textarea);
+    };
+
     document.addEventListener('contextmenu', function (event) {
         const target = event.target.closest('.consequence-input');
         if (!target) {
@@ -315,21 +349,12 @@ $events = get_all_events();
         }
 
         event.preventDefault();
-
-        if (featureMenu) {
-            const list = featureMenu.querySelector('ul');
-            if (list) {
-                list.innerHTML = modifiableFeatures
-                    .map((feature) => `<li><strong>${feature.label}</strong> <span>(${feature.key})</span></li>`)
-                    .join('');
-            }
-        }
-
-        showFeatureMenu(event.pageX, event.pageY);
+        openFeatureMenuFor(target, event.pageX, event.pageY);
     });
 
     document.addEventListener('click', function (event) {
         if (!featureMenu || featureMenu.contains(event.target)) return;
+        if (event.target.closest('.view-features-btn')) return;
         hideFeatureMenu();
     });
 
