@@ -189,7 +189,7 @@ $events = get_all_events();
     $preview = ($id !== '') ? find_event($id) : null;
     if (!$preview) {
         echo '<p>Event not found. <a href="events.php">Back to list</a></p>';
-    } else:
+    } else {
     ?>
     <div class="admin-section-header">
         <h1>Preview: <?= h($preview['name']) ?></h1>
@@ -216,7 +216,7 @@ $events = get_all_events();
             <p><em>No choices defined — this event happens automatically.</em></p>
         <?php endif; ?>
     </div>
-    <?php endif; ?>
+    <?php } ?>
 
 <?php endif; ?>
 
