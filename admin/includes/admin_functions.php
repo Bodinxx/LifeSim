@@ -161,7 +161,7 @@ function parse_consequence_input(string $raw, string $label): array
 function consequence_array_is_list(array $value): bool
 {
     if ($value === []) {
-        return false;
+        return true;
     }
 
     return array_keys($value) === range(0, count($value) - 1);
