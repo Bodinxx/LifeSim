@@ -35,19 +35,12 @@ $recent_log = array_slice(array_reverse($log), 0, 5);
 <main class="admin-main">
     <h1>Dashboard</h1>
 
-    <div class="admin-stats-grid">
-        <div class="admin-stat-card">
-            <span class="stat-value"><?= count($events) ?></span>
-            <span class="stat-label">Total Events</span>
-        </div>
-        <div class="admin-stat-card">
-            <span class="stat-value"><?= $enabled_count ?></span>
-            <span class="stat-label">Enabled</span>
-        </div>
-        <div class="admin-stat-card">
-            <span class="stat-value"><?= $disabled_count ?></span>
-            <span class="stat-label">Disabled</span>
-        </div>
+    <div class="admin-stat-card admin-stat-card--single">
+        <span class="stat-item"><span class="stat-value"><?= count($events) ?></span> <span class="stat-label">Total</span></span>
+        <span class="stat-divider">|</span>
+        <span class="stat-item"><span class="stat-value stat-value--enabled"><?= $enabled_count ?></span> <span class="stat-label">Enabled</span></span>
+        <span class="stat-divider">|</span>
+        <span class="stat-item"><span class="stat-value stat-value--disabled"><?= $disabled_count ?></span> <span class="stat-label">Disabled</span></span>
     </div>
 
     <section class="admin-section">
