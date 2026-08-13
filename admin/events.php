@@ -69,6 +69,7 @@ if ($action === 'edit' && $id !== '') {
 
 $saved  = !empty($_GET['saved']);
 $events = get_all_events();
+usort($events, fn($a, $b) => strcasecmp($a['name'] ?? '', $b['name'] ?? ''));
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -116,12 +117,10 @@ $events = get_all_events();
                     </span>
                 </td>
                 <td class="admin-actions">
-                    <a href="events.php?action=edit&id=<?= h($ev['id']) ?>">Edit</a>
-                    <a href="events.php?action=preview&id=<?= h($ev['id']) ?>">Preview</a>
+                    <a href="events.php?action=edit&id=<?= h($ev['id']) ?>" title="Edit">✏️</a>
+                    <a href="#" class="preview-btn" data-id="<?= h($ev['id']) ?>" title="Preview">👁️</a>
                     <a href="events.php?action=toggle&id=<?= h($ev['id']) ?>"
-                       onclick="return confirm('Toggle this event?')">
-                        <?= !empty($ev['enabled']) ? 'Disable' : 'Enable' ?>
-                    </a>
+                       onclick="return confirm('Toggle this event?')" title="<?= !empty($ev['enabled']) ? 'Disable' : 'Enable' ?>">🔁</a>
                 </td>
             </tr>
         <?php endforeach; ?>
@@ -161,9 +160,16 @@ $events = get_all_events();
                   class="consequence-input"
                   data-feature-list="modifiable"><?= h(!empty($event['consequence']) ? json_encode($event['consequence'], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) : '') ?></textarea>
         <p class="form-help">
-            Applies when the event has no choices.
-            <button type="button" class="view-features-btn admin-button-small"
-                    onclick="openFeatureMenuFor(this.closest('p').previousElementSibling)">View modifiable features</button>
+            Applies when the event has no choices. &nbsp;
+            <span class="feature-insert-row">
+                <select class="feature-select admin-input-small">
+                    <?php foreach ($modifiable_features as $fkey => $flabel): ?>
+                    <option value="<?= h($fkey) ?>"><?= h($flabel) ?> (<?= h($fkey) ?>)</option>
+                    <?php endforeach; ?>
+                </select>
+                <button type="button" class="insert-feature-btn admin-button-small"
+                        data-target="consequence_json">Insert</button>
+            </span>
         </p>
 
         <label class="checkbox-label">
@@ -192,8 +198,14 @@ $events = get_all_events();
                               class="consequence-input"
                               data-feature-list="modifiable"><?= h(!empty($choice['consequence']) ? json_encode($choice['consequence'], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) : '') ?></textarea>
                     <p class="form-help">
-                        <button type="button" class="view-features-btn admin-button-small"
-                                onclick="openFeatureMenuFor(this.closest('p').previousElementSibling)">View modifiable features</button>
+                        <span class="feature-insert-row">
+                            <select class="feature-select admin-input-small">
+                                <?php foreach ($modifiable_features as $fkey => $flabel): ?>
+                                <option value="<?= h($fkey) ?>"><?= h($flabel) ?> (<?= h($fkey) ?>)</option>
+                                <?php endforeach; ?>
+                            </select>
+                            <button type="button" class="insert-feature-btn admin-button-small">Insert</button>
+                        </span>
                     </p>
                     <button type="button" class="remove-choice admin-button-small"
                             onclick="removeChoice(this)">Remove</button>
@@ -210,77 +222,85 @@ $events = get_all_events();
     </form>
 
 <?php elseif ($action === 'preview'): ?>
-
-    <?php
-    $preview = ($id !== '') ? find_event($id) : null;
-    if (!$preview) {
-        echo '<p>Event not found. <a href="events.php">Back to list</a></p>';
-    } else {
-    ?>
-    <div class="admin-section-header">
-        <h1>Preview: <?= h($preview['name']) ?></h1>
-        <a href="events.php" class="admin-button admin-button-secondary">Back</a>
-    </div>
-
-    <div class="event-preview-card">
-        <p class="event-preview-description"><?= nl2br(h($preview['description'])) ?></p>
-        <?php if ($preview['choices']): ?>
-        <div class="event-preview-choices">
-            <p><strong>Choices:</strong></p>
-            <ul>
-            <?php foreach ($preview['choices'] as $choice): ?>
-                <li>
-                    <strong><?= h($choice['text']) ?></strong>
-                    <?php if (!empty($choice['outcome'])): ?>
-                        — <em><?= h($choice['outcome']) ?></em>
-                    <?php endif; ?>
-                    <?php $choice_summary = format_consequence_summary($choice['consequence'] ?? []); ?>
-                    <?php if ($choice_summary !== ''): ?>
-                        <div class="event-preview-consequence"><?= h($choice_summary) ?></div>
-                    <?php endif; ?>
-                </li>
-            <?php endforeach; ?>
-            </ul>
-        </div>
-        <?php else: ?>
-            <p><em>No choices defined — this event happens automatically.</em></p>
-            <?php $event_summary = format_consequence_summary($preview['consequence'] ?? []); ?>
-            <?php if ($event_summary !== ''): ?>
-                <p class="event-preview-consequence"><strong>Consequence:</strong> <?= h($event_summary) ?></p>
-            <?php endif; ?>
-        <?php endif; ?>
-    </div>
-    <?php } ?>
+    <?php header('Location: events.php'); exit; ?>
 
 <?php endif; ?>
 
 </main>
 
-<div id="feature-context-menu" class="feature-context-menu hidden" role="note" aria-live="polite">
-    <p>Modifiable features</p>
-    <ul></ul>
+<!-- Preview popover -->
+<div id="preview-overlay" class="preview-overlay hidden" aria-modal="true" role="dialog">
+    <div class="preview-popover">
+        <div class="preview-popover-header">
+            <strong id="preview-title"></strong>
+            <button type="button" id="preview-close" class="admin-button-small">✕</button>
+        </div>
+        <div id="preview-body" class="preview-popover-body"></div>
+    </div>
 </div>
+
 <script>
 (function () {
     'use strict';
 
-    const modifiableFeatures = <?= json_encode(array_map(
-        static fn(string $key, string $label): array => ['key' => $key, 'label' => $label],
-        array_keys($modifiable_features),
-        array_values($modifiable_features)
-    ), JSON_UNESCAPED_SLASHES) ?>;
-    const featureMenu = document.getElementById('feature-context-menu');
+    const allEvents = <?= json_encode(array_map(static function(array $ev): array {
+        return [
+            'id'          => $ev['id'],
+            'name'        => $ev['name'],
+            'description' => $ev['description'],
+            'choices'     => $ev['choices'],
+            'consequence' => $ev['consequence'],
+        ];
+    }, $events), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?>;
 
-    function hideFeatureMenu() {
-        if (!featureMenu) return;
-        featureMenu.classList.add('hidden');
+    const featureLabels = <?= json_encode($modifiable_features, JSON_UNESCAPED_SLASHES) ?>;
+
+    // -----------------------------------------------------------------------
+    // Feature insert
+    // -----------------------------------------------------------------------
+    function insertFeature(btn) {
+        const row = btn.closest('.form-help, p');
+        const select = row ? row.querySelector('.feature-select') : null;
+        const key = select ? select.value : null;
+        if (!key) return;
+
+        // Find the nearest preceding .consequence-input
+        let textarea = null;
+        if (btn.dataset.target) {
+            textarea = document.getElementById(btn.dataset.target);
+        } else {
+            const parent = btn.closest('.choice-row') || btn.closest('.admin-form');
+            if (parent) {
+                const all = parent.querySelectorAll('.consequence-input');
+                textarea = all[all.length - 1];
+            }
+        }
+        if (!textarea) return;
+
+        let raw = textarea.value.trim();
+        let obj = {};
+        if (raw !== '') {
+            try { obj = JSON.parse(raw); } catch (e) { obj = {}; }
+        }
+        if (typeof obj !== 'object' || Array.isArray(obj)) obj = {};
+        if (!(key in obj)) obj[key] = 0;
+        textarea.value = JSON.stringify(obj, null, 4);
+        textarea.dispatchEvent(new Event('input'));
     }
 
-    function showFeatureMenu(x, y) {
-        if (!featureMenu) return;
-        featureMenu.style.left = `${x}px`;
-        featureMenu.style.top = `${y}px`;
-        featureMenu.classList.remove('hidden');
+    document.addEventListener('click', function (e) {
+        if (e.target.closest('.insert-feature-btn')) {
+            insertFeature(e.target.closest('.insert-feature-btn'));
+        }
+    });
+
+    // -----------------------------------------------------------------------
+    // Add / remove choices
+    // -----------------------------------------------------------------------
+    function featureSelectOptions() {
+        return Object.entries(featureLabels)
+            .map(([k, v]) => `<option value="${k}">${v} (${k})</option>`)
+            .join('');
     }
 
     document.getElementById('add-choice')?.addEventListener('click', function () {
@@ -298,8 +318,10 @@ $events = get_all_events();
             <textarea name="choices_consequence[]" rows="3"
                       class="consequence-input" data-feature-list="modifiable"></textarea>
             <p class="form-help">
-                <button type="button" class="view-features-btn admin-button-small"
-                        onclick="openFeatureMenuFor(this.closest('p').previousElementSibling)">View modifiable features</button>
+                <span class="feature-insert-row">
+                    <select class="feature-select admin-input-small">${featureSelectOptions()}</select>
+                    <button type="button" class="insert-feature-btn admin-button-small">Insert</button>
+                </span>
             </p>
             <button type="button" class="remove-choice admin-button-small"
                     onclick="removeChoice(this)">Remove</button>
@@ -317,49 +339,76 @@ $events = get_all_events();
         }
     };
 
-    function openFeatureMenuFor(textarea, x, y) {
-        if (!textarea || !featureMenu) return;
-        const list = featureMenu.querySelector('ul');
-        if (list) {
-            list.innerHTML = modifiableFeatures
-                .map((feature) => `<li><strong>${feature.label}</strong> <span>(${feature.key})</span></li>`)
-                .join('');
-        }
-        if (x !== undefined && y !== undefined) {
-            showFeatureMenu(x, y);
-        } else {
-            const rect = textarea.getBoundingClientRect();
-            showFeatureMenu(rect.left + window.scrollX, rect.bottom + window.scrollY + 4);
-        }
+    // -----------------------------------------------------------------------
+    // Preview popover
+    // -----------------------------------------------------------------------
+    function esc(str) {
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
     }
 
-    window.openFeatureMenuFor = function (textarea) {
-        if (featureMenu && !featureMenu.classList.contains('hidden')) {
-            hideFeatureMenu();
-            return;
-        }
-        openFeatureMenuFor(textarea);
-    };
+    const overlay = document.getElementById('preview-overlay');
+    const previewTitle = document.getElementById('preview-title');
+    const previewBody = document.getElementById('preview-body');
 
-    document.addEventListener('contextmenu', function (event) {
-        const target = event.target.closest('.consequence-input');
-        if (!target) {
-            hideFeatureMenu();
-            return;
+    function formatConsequence(consequence) {
+        const parts = [];
+        for (const [k, v] of Object.entries(consequence || {})) {
+            if (featureLabels[k] !== undefined) {
+                const sign = v > 0 ? '+' : '';
+                parts.push(esc(featureLabels[k]) + ' ' + sign + v);
+            }
         }
+        return parts.join(', ');
+    }
 
-        event.preventDefault();
-        openFeatureMenuFor(target, event.pageX, event.pageY);
+    function openPreview(id) {
+        const ev = allEvents.find(e => e.id === id);
+        if (!ev || !overlay) return;
+        previewTitle.textContent = ev.name;
+        let html = `<p class="event-preview-description">${esc(ev.description).replace(/\n/g, '<br>')}</p>`;
+        if (ev.choices && ev.choices.length) {
+            html += '<p><strong>Choices:</strong></p><ul>';
+            ev.choices.forEach(c => {
+                html += `<li><strong>${esc(c.text)}</strong>`;
+                if (c.outcome) html += ` — <em>${esc(c.outcome)}</em>`;
+                const cs = formatConsequence(c.consequence);
+                if (cs) html += `<div class="event-preview-consequence">${cs}</div>`;
+                html += '</li>';
+            });
+            html += '</ul>';
+        } else {
+            html += '<p><em>No choices — this event happens automatically.</em></p>';
+            const cs = formatConsequence(ev.consequence);
+            if (cs) html += `<p class="event-preview-consequence"><strong>Consequence:</strong> ${cs}</p>`;
+        }
+        previewBody.innerHTML = html;
+        overlay.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closePreview() {
+        if (overlay) overlay.classList.add('hidden');
+        document.body.style.overflow = '';
+    }
+
+    document.querySelectorAll('.preview-btn').forEach(btn => {
+        btn.addEventListener('click', function (e) {
+            e.preventDefault();
+            openPreview(this.dataset.id);
+        });
     });
 
-    document.addEventListener('click', function (event) {
-        if (!featureMenu || featureMenu.contains(event.target)) return;
-        if (event.target.closest('.view-features-btn')) return;
-        hideFeatureMenu();
+    document.getElementById('preview-close')?.addEventListener('click', closePreview);
+    overlay?.addEventListener('click', function (e) {
+        if (e.target === overlay) closePreview();
     });
-
-    window.addEventListener('resize', hideFeatureMenu);
-    document.addEventListener('scroll', hideFeatureMenu, true);
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') closePreview();
+    });
 }());
 </script>
 </body>
