@@ -4,35 +4,43 @@
         "name": "Found a Wallet",
         "description": "You find a wallet on the street with $50 inside and an ID. What do you do?",
         "enabled": true,
-        "consequence": {},
+        "consequence": [],
         "choices": [
             {
-                "text": "Return it to the owner",
-                "outcome": "You returned the wallet. The owner was grateful, and your reputation improved.",
+                "text": "Return it with the money",
+                "outcome": "You contact the owner and return the wallet with everything still inside.",
                 "consequence": {
-                    "happiness": 5,
-                    "reputation": 10
+                    "happiness": 3,
+                    "reputation": 6
                 }
             },
             {
-                "text": "Keep the money",
-                "outcome": "You kept the $50 but felt guilty about it.",
+                "text": "Return it but keep the cash",
+                "outcome": "You remove the money before returning the wallet and hope no one notices.",
                 "consequence": {
                     "money": 50,
-                    "happiness": -10
+                    "reputation": -4,
+                    "stress": 3
                 }
             },
             {
-                "text": "Hand it in to the police",
-                "outcome": "You handed the wallet in to the police. A responsible choice.",
+                "text": "Keep everything",
+                "outcome": "You take the wallet home and make no attempt to find its owner.",
                 "consequence": {
-                    "happiness": 5,
-                    "reputation": 5
+                    "money": 50,
+                    "reputation": -7,
+                    "discipline": -4,
+                    "stress": 5
                 }
+            },
+            {
+                "text": "Leave it where it is",
+                "outcome": "You decide that the wallet is someone else’s responsibility.",
+                "consequence": []
             }
         ],
-        "created_at": "2026-01-01T00:00:00Z",
-        "updated_at": "2026-01-01T00:00:00Z"
+        "created_at": "2026-08-13T00:33:09Z",
+        "updated_at": "2026-08-13T00:33:09Z"
     },
     {
         "id": "a1b2c3d4-0002-4000-8000-000000000002",
@@ -48,36 +56,46 @@
     },
     {
         "id": "a1b2c3d4-0003-4000-8000-000000000003",
-        "name": "Old Friend Reaches Out",
+        "name": "Friend Calls Out of the Blue",
         "description": "Someone you lost touch with sends you a message out of the blue. How do you respond?",
         "enabled": true,
-        "consequence": {},
+        "consequence": [],
         "choices": [
             {
-                "text": "Catch up warmly",
-                "outcome": "You rekindled an old friendship. Your happiness increased.",
+                "text": "Talk for hours",
+                "outcome": "You set aside your plans and enjoy a long conversation about old times.",
                 "consequence": {
-                    "happiness": 8,
+                    "happiness": 6,
                     "stress": -3
                 }
             },
             {
-                "text": "Keep it brief",
-                "outcome": "You replied politely but didn't invest much time.",
+                "text": "Arrange to meet",
+                "outcome": "You invite your old friend to meet you for a meal later in the week.",
+                "consequence": {
+                    "happiness": 8,
+                    "stress": -2,
+                    "money": -30
+                }
+            },
+            {
+                "text": "Keep the conversation short",
+                "outcome": "You exchange a few friendly words but end the call before it becomes lengthy.",
                 "consequence": {
                     "happiness": 1
                 }
             },
             {
-                "text": "Ignore the message",
-                "outcome": "You chose not to respond. The opportunity passed.",
+                "text": "Ignore the call",
+                "outcome": "You let the call go unanswered and do not return the message.",
                 "consequence": {
-                    "happiness": -5
+                    "happiness": -2,
+                    "reputation": -2
                 }
             }
         ],
-        "created_at": "2026-01-01T00:00:00Z",
-        "updated_at": "2026-01-01T00:00:00Z"
+        "created_at": "2026-08-13T00:36:03Z",
+        "updated_at": "2026-08-13T00:36:03Z"
     },
     {
         "id": "a1b2c3d4-0004-4000-8000-000000000004",
@@ -98,7 +116,7 @@
         "name": "Community Event",
         "description": "Your neighbourhood is hosting a community clean-up day. Will you join?",
         "enabled": true,
-        "consequence": {},
+        "consequence": [],
         "choices": [
             {
                 "text": "Volunteer for the day",
@@ -111,10 +129,1784 @@
             {
                 "text": "Watch from afar",
                 "outcome": "You stayed home but watched the event from your window.",
-                "consequence": {}
+                "consequence": []
             }
         ],
         "created_at": "2026-01-01T00:00:00Z",
         "updated_at": "2026-01-01T00:00:00Z"
+    },
+    {
+        "id": "6f5ebb83-8c65-4496-9e78-e7862313773b",
+        "name": "Won a Small Prize",
+        "description": "You entered a local contest months ago and have won a $200 gift card.",
+        "enabled": true,
+        "consequence": [],
+        "choices": [
+            {
+                "text": "Use it on yourself",
+                "outcome": "You spend the gift card on something enjoyable that you would not normally buy.",
+                "consequence": {
+                    "happiness": 6
+                }
+            },
+            {
+                "text": "Buy gifts for others",
+                "outcome": "You use your prize to surprise some of the important people in your life.",
+                "consequence": {
+                    "happiness": 4,
+                    "reputation": 5
+                }
+            },
+            {
+                "text": "Sell the gift card",
+                "outcome": "You find someone willing to buy the card from you for cash.",
+                "consequence": {
+                    "money": 150
+                }
+            },
+            {
+                "text": "Forget to claim it",
+                "outcome": "You put off collecting the prize until the claim period expires.",
+                "consequence": []
+            }
+        ],
+        "created_at": "2026-08-13T00:38:34Z",
+        "updated_at": "2026-08-13T00:38:34Z"
+    },
+    {
+        "id": "93930b24-8456-422e-a623-de3cb91b1d69",
+        "name": "Lost Your Keys",
+        "description": "You arrive home and realize that your keys are missing.",
+        "enabled": true,
+        "consequence": [],
+        "choices": [
+            {
+                "text": "Retrace your steps",
+                "outcome": "You carefully revisit every place you went and eventually locate the keys.",
+                "consequence": {
+                    "stress": 4,
+                    "discipline": 1
+                }
+            },
+            {
+                "text": "Call a locksmith",
+                "outcome": "You pay a professional to let you inside and replace the missing keys.",
+                "consequence": {
+                    "money": -150,
+                    "stress": 2
+                }
+            },
+            {
+                "text": "Climb through a window",
+                "outcome": "You attempt an awkward entrance and suffer a few scrapes along the way.",
+                "consequence": {
+                    "health": -3,
+                    "appearance": -1,
+                    "stress": 3
+                }
+            },
+            {
+                "text": "Wait for a spare key",
+                "outcome": "You remain outside until someone with a spare key can come to help.",
+                "consequence": {
+                    "happiness": -1,
+                    "stress": 2
+                }
+            }
+        ],
+        "created_at": "2026-08-13T00:41:41Z",
+        "updated_at": "2026-08-13T00:41:41Z"
+    },
+    {
+        "id": "65c8c686-e16c-41e2-87ca-cbd53ecfc103",
+        "name": "Unexpected Tax Refund",
+        "description": "A correction to an old tax return results in an unexpected $600 refund.",
+        "enabled": true,
+        "consequence": [],
+        "choices": [
+            {
+                "text": "Save the money",
+                "outcome": "You place the entire refund into your savings for a future need.",
+                "consequence": {
+                    "money": 600,
+                    "discipline": 4
+                }
+            },
+            {
+                "text": "Spend it on something fun",
+                "outcome": "You use most of the refund to buy something you have wanted for a while.",
+                "consequence": {
+                    "money": 100,
+                    "happiness": 7
+                }
+            },
+            {
+                "text": "Pay down bills",
+                "outcome": "You use the refund to reduce your debts and monthly obligations.",
+                "consequence": {
+                    "discipline": 5,
+                    "stress": -6
+                }
+            },
+            {
+                "text": "Invest in training",
+                "outcome": "You spend the refund on training that could improve your career prospects.",
+                "consequence": {
+                    "intelligence": 4,
+                    "annualIncome": 300
+                }
+            }
+        ],
+        "created_at": "2026-08-13T00:35:17Z",
+        "updated_at": "2026-08-13T00:35:17Z"
+    },
+    {
+        "id": "f1ac2aab-c2a2-45b5-9109-5e326447f3b8",
+        "name": "Caught in a Rainstorm",
+        "description": "A sudden downpour catches you several blocks from home without an umbrella.",
+        "enabled": true,
+        "consequence": [],
+        "choices": [
+            {
+                "text": "Run home",
+                "outcome": "You sprint through the rain, but arrive home soaked and exhausted.",
+                "consequence": {
+                    "health": -2,
+                    "stress": 2
+                }
+            },
+            {
+                "text": "Dance in the rain",
+                "outcome": "You embrace the moment and have fun despite getting completely drenched.",
+                "consequence": {
+                    "happiness": 5,
+                    "health": -1,
+                    "appearance": -2
+                }
+            },
+            {
+                "text": "Wait under shelter",
+                "outcome": "You find a covered doorway and calmly wait for the storm to pass.",
+                "consequence": {
+                    "discipline": 1,
+                    "stress": -1
+                }
+            },
+            {
+                "text": "Buy an umbrella",
+                "outcome": "You rush into a nearby shop and purchase protection from the weather.",
+                "consequence": {
+                    "money": -20,
+                    "stress": -2
+                }
+            }
+        ],
+        "created_at": "2026-08-13T00:44:40Z",
+        "updated_at": "2026-08-13T00:44:40Z"
+    },
+    {
+        "id": "3679af24-458a-44f1-9246-f9eafeb446a3",
+        "name": "Received a Surprise Gift",
+        "description": "A package arrives from a friend containing a thoughtful gift you did not expect. The surprise reminds you that someone was thinking about you and brightens your entire day.",
+        "enabled": true,
+        "consequence": {
+            "happiness": 7,
+            "stress": -2,
+            "reputation": 1
+        },
+        "choices": [],
+        "created_at": "2026-08-13T00:46:05Z",
+        "updated_at": "2026-08-13T00:46:05Z"
+    },
+    {
+        "id": "82cf635e-9935-4d5f-bed7-ff2420353ef6",
+        "name": "Found Money in an Old Coat",
+        "description": "While cleaning out a closet, you discover $80 in the pocket of an old coat.",
+        "enabled": true,
+        "consequence": [],
+        "choices": [
+            {
+                "text": "Put it into savings",
+                "outcome": "You treat the discovery as an opportunity to strengthen your finances.",
+                "consequence": {
+                    "money": 80,
+                    "discipline": 2
+                }
+            },
+            {
+                "text": "Treat yourself",
+                "outcome": "You spend the forgotten money on a meal, game, or other small luxury.",
+                "consequence": {
+                    "happiness": 5
+                }
+            },
+            {
+                "text": "Donate it",
+                "outcome": "You decide that you did not miss the money and give it to someone who needs it.",
+                "consequence": {
+                    "happiness": 3,
+                    "reputation": 4
+                }
+            },
+            {
+                "text": "Leave it in the coat",
+                "outcome": "You put the money back as a surprise for another day.",
+                "consequence": {
+                    "happiness": 1
+                }
+            }
+        ],
+        "created_at": "2026-08-13T00:48:43Z",
+        "updated_at": "2026-08-13T00:48:43Z"
+    },
+    {
+        "id": "8469d530-311a-4c5d-ba0e-7e89ae3e952a",
+        "name": "Minor Fender-Bender",
+        "description": "You are involved in a low-speed collision. No one is seriously injured, but both vehicles are damaged.",
+        "enabled": true,
+        "consequence": [],
+        "choices": [
+            {
+                "text": "Exchange information calmly",
+                "outcome": "You check that everyone is safe and properly document the accident.",
+                "consequence": {
+                    "money": -250,
+                    "stress": 5,
+                    "reputation": 1
+                }
+            },
+            {
+                "text": "Offer to pay privately",
+                "outcome": "You offer to cover the damage without involving an insurance company.",
+                "consequence": {
+                    "money": -600,
+                    "stress": 3
+                }
+            },
+            {
+                "text": "Blame the other driver",
+                "outcome": "You become argumentative and insist the other person caused everything.",
+                "consequence": {
+                    "stress": 7,
+                    "reputation": -4
+                }
+            },
+            {
+                "text": "Leave the scene",
+                "outcome": "You drive away before anyone can record your information.",
+                "consequence": {
+                    "reputation": -10,
+                    "discipline": -7,
+                    "stress": 10
+                }
+            }
+        ],
+        "created_at": "2026-08-13T00:51:55Z",
+        "updated_at": "2026-08-13T00:51:55Z"
+    },
+    {
+        "id": "a1988476-b67c-4523-9156-25b21f1459a0",
+        "name": "Interesting Stranger",
+        "description": "While waiting in a long line, you begin talking with a stranger who shares one of your hobbies.",
+        "enabled": true,
+        "consequence": [],
+        "choices": [
+            {
+                "text": "Exchange contact information",
+                "outcome": "You decide that this could be the beginning of a new friendship.",
+                "consequence": {
+                    "happiness": 4,
+                    "reputation": 1
+                }
+            },
+            {
+                "text": "Enjoy a brief conversation",
+                "outcome": "You have a pleasant discussion but allow the encounter to end naturally.",
+                "consequence": {
+                    "happiness": 2,
+                    "stress": -2
+                }
+            },
+            {
+                "text": "Politely end the conversation",
+                "outcome": "You explain that you are not feeling social and return to waiting quietly.",
+                "consequence": []
+            },
+            {
+                "text": "Pretend not to hear them",
+                "outcome": "You deliberately ignore the stranger until they stop trying to talk.",
+                "consequence": {
+                    "reputation": -1
+                }
+            }
+        ],
+        "created_at": "2026-08-13T00:54:33Z",
+        "updated_at": "2026-08-13T00:54:33Z"
+    },
+    {
+        "id": "ae5fbceb-6812-4ed3-bb93-18d660073c5c",
+        "name": "Broken Appliance",
+        "description": "Your stove stops working without warning.",
+        "enabled": true,
+        "consequence": [],
+        "choices": [
+            {
+                "text": "Have it repaired",
+                "outcome": "You call a technician and pay to restore the appliance to working condition.",
+                "consequence": {
+                    "money": -300,
+                    "stress": 2
+                }
+            },
+            {
+                "text": "Buy a replacement",
+                "outcome": "You replace it with a newer model that should be more reliable.",
+                "consequence": {
+                    "money": -900,
+                    "happiness": 2,
+                    "stress": -3
+                }
+            },
+            {
+                "text": "Repair it yourself",
+                "outcome": "You study the problem and attempt to fix the appliance on your own, with uTube's help.",
+                "consequence": {
+                    "money": -50,
+                    "intelligence": 3,
+                    "stress": 3
+                }
+            },
+            {
+                "text": "Live without it",
+                "outcome": "You reorganize your routine, buying more microwave meals, and postpone dealing with the problem.",
+                "consequence": {
+                    "discipline": 2,
+                    "happiness": -4,
+                    "stress": 5,
+                    "money": -100
+                }
+            }
+        ],
+        "created_at": "2026-08-13T00:59:02Z",
+        "updated_at": "2026-08-13T00:59:02Z"
+    },
+    {
+        "id": "54d6ea56-38e8-409e-89a2-ee7f887e75fa",
+        "name": "Compliment from a Stranger",
+        "description": "A stranger compliments your clothing and says you look great today. The unexpected compliment gives you a welcome boost of confidence.",
+        "enabled": true,
+        "consequence": {
+            "happiness": 4,
+            "appearance": 2,
+            "stress": -1
+        },
+        "choices": [],
+        "created_at": "2026-08-13T00:59:58Z",
+        "updated_at": "2026-08-13T00:59:58Z"
+    },
+    {
+        "id": "9e2ebfab-b64b-406d-93d5-ba5c1e26e91a",
+        "name": "New Favourite Restaurant",
+        "description": "You try a recently opened restaurant and discover one of the best meals you have ever eaten.",
+        "enabled": true,
+        "consequence": [],
+        "choices": [
+            {
+                "text": "Order dessert",
+                "outcome": "You extend the experience by ordering the restaurant’s most tempting dessert.",
+                "consequence": {
+                    "money": -55,
+                    "happiness": 7,
+                    "health": -1
+                }
+            },
+            {
+                "text": "Recommend it to friends",
+                "outcome": "You tell several people about the restaurant and encourage them to try it.",
+                "consequence": {
+                    "money": -35,
+                    "happiness": 4,
+                    "reputation": 2
+                }
+            },
+            {
+                "text": "Plan another visit",
+                "outcome": "You enjoy your meal and make a note to return when your budget allows.",
+                "consequence": {
+                    "money": -35,
+                    "happiness": 3
+                }
+            }
+        ],
+        "created_at": "2026-08-13T01:02:17Z",
+        "updated_at": "2026-08-13T01:02:17Z"
+    },
+    {
+        "id": "c77d7e7f-aed4-439d-9ee5-d518bbbab3fb",
+        "name": "Missed an Important Appointment",
+        "description": "You lose track of time and miss an appointment that was difficult to schedule.",
+        "enabled": true,
+        "consequence": [],
+        "choices": [
+            {
+                "text": "Apologize and reschedule",
+                "outcome": "You admit your mistake and ask for another appointment.",
+                "consequence": {
+                    "money": -25,
+                    "reputation": -2,
+                    "stress": 4
+                }
+            },
+            {
+                "text": "Invent an excuse",
+                "outcome": "You create a story to avoid admitting that you simply forgot.",
+                "consequence": {
+                    "reputation": -4,
+                    "discipline": -2,
+                    "stress": 3
+                }
+            },
+            {
+                "text": "Accept the consequences",
+                "outcome": "You take responsibility and use the experience as a lesson in planning.",
+                "consequence": {
+                    "discipline": 2,
+                    "stress": 2
+                }
+            },
+            {
+                "text": "Blame someone else",
+                "outcome": "You accuse another person of failing to remind you.",
+                "consequence": {
+                    "reputation": -6,
+                    "discipline": -3
+                }
+            }
+        ],
+        "created_at": "2026-08-13T01:05:17Z",
+        "updated_at": "2026-08-13T01:05:17Z"
+    },
+    {
+        "id": "8d5551ff-1d42-42c6-ad57-13a5ed446480",
+        "name": "Neighbour Needs Help",
+        "description": "Your neighbour asks for help moving a heavy piece of furniture.",
+        "enabled": true,
+        "consequence": [],
+        "choices": [
+            {
+                "text": "Help with the move",
+                "outcome": "You spend part of your afternoon helping them move the furniture safely.",
+                "consequence": {
+                    "health": -1,
+                    "happiness": 2,
+                    "reputation": 5
+                }
+            },
+            {
+                "text": "Help and stay for coffee",
+                "outcome": "Afterward, you accept their invitation to relax and get to know them better.",
+                "consequence": {
+                    "health": -1,
+                    "happiness": 4,
+                    "reputation": 6
+                }
+            },
+            {
+                "text": "Politely decline",
+                "outcome": "You explain that you are busy and cannot help today.",
+                "consequence": {
+                    "reputation": -1
+                }
+            },
+            {
+                "text": "Pretend you are not home",
+                "outcome": "You remain silent until your neighbour finally leaves.",
+                "consequence": {
+                    "discipline": -1,
+                    "reputation": -2
+                }
+            }
+        ],
+        "created_at": "2026-08-13T01:08:04Z",
+        "updated_at": "2026-08-13T01:08:04Z"
+    },
+    {
+        "id": "49f5717a-8856-41b3-b962-e359e85b5c58",
+        "name": "Former Classmate Reconnects",
+        "description": "A former classmate contacts you after finding an old school photograph.",
+        "enabled": true,
+        "consequence": [],
+        "choices": [
+            {
+                "text": "Respond warmly",
+                "outcome": "You exchange messages and happily revisit some shared memories.",
+                "consequence": {
+                    "happiness": 4,
+                    "reputation": 2
+                }
+            },
+            {
+                "text": "Meet for coffee",
+                "outcome": "You arrange an in-person reunion and talk about where life has taken you.",
+                "consequence": {
+                    "money": -15,
+                    "happiness": 6,
+                    "stress": -1
+                }
+            },
+            {
+                "text": "Do not reply",
+                "outcome": "You read the message but decide that you do not want to reconnect.",
+                "consequence": {
+                    "happiness": -1
+                }
+            },
+            {
+                "text": "Block them",
+                "outcome": "You prevent the classmate from contacting you again without offering an explanation.",
+                "consequence": {
+                    "reputation": -2
+                }
+            }
+        ],
+        "created_at": "2026-08-13T01:11:01Z",
+        "updated_at": "2026-08-13T01:11:01Z"
+    },
+    {
+        "id": "24df859c-f3e1-4bf6-a038-60cff1edccbc",
+        "name": "Found a Stray Animal",
+        "description": "A frightened dog with a damaged identification tag follows you home.",
+        "enabled": true,
+        "consequence": [],
+        "choices": [
+            {
+                "text": "Search for the owner",
+                "outcome": "You post notices and contact nearby residents until the owner is located.",
+                "consequence": {
+                    "money": -20,
+                    "happiness": 4,
+                    "reputation": 6
+                }
+            },
+            {
+                "text": "Visit an animal shelter",
+                "outcome": "You take the animal somewhere equipped to care for it and find its owner.",
+                "consequence": {
+                    "money": -10,
+                    "reputation": 4
+                }
+            },
+            {
+                "text": "Ignore it",
+                "outcome": "You leave the animal outside and continue with your day.",
+                "consequence": {
+                    "happiness": -2,
+                    "reputation": -4
+                }
+            }
+        ],
+        "created_at": "2026-08-13T01:14:38Z",
+        "updated_at": "2026-08-13T01:14:38Z"
+    },
+    {
+        "id": "f40b8cd8-1fc2-4c78-adbb-42c40a5caf09",
+        "name": "Unusually High Utility Bill",
+        "description": "Your utility bill is far higher than expected, placing pressure on your budget.",
+        "enabled": true,
+        "consequence": [],
+        "choices": [
+            {
+                "text": "Pay it immediately",
+                "outcome": "You cover the entire charge and adjust the rest of your monthly spending.",
+                "consequence": {
+                    "money": -300,
+                    "discipline": 3,
+                    "stress": 2
+                }
+            },
+            {
+                "text": "Investigate the charges",
+                "outcome": "You review your usage and successfully dispute part of the bill.",
+                "consequence": {
+                    "money": -180,
+                    "intelligence": 2,
+                    "stress": 3
+                }
+            },
+            {
+                "text": "Request a payment plan",
+                "outcome": "You arrange to divide the bill across several months.",
+                "consequence": {
+                    "money": -100,
+                    "reputation": -1,
+                    "stress": 2
+                }
+            },
+            {
+                "text": "Ignore the bill",
+                "outcome": "You avoid the problem, allowing late fees and worry to accumulate.",
+                "consequence": {
+                    "money": -50,
+                    "discipline": -4,
+                    "reputation": -4,
+                    "stress": 8
+                }
+            }
+        ],
+        "created_at": "2026-08-13T01:18:12Z",
+        "updated_at": "2026-08-13T01:18:12Z"
+    },
+    {
+        "id": "350947fe-e57d-49c2-be6f-adb8c0f34ad6",
+        "name": "Last-Minute Party Invitation",
+        "description": "A friend invites you to a party tonight, but you had planned a quiet evening.",
+        "enabled": true,
+        "consequence": [],
+        "choices": [
+            {
+                "text": "Attend the party",
+                "outcome": "You change your plans and spend an enjoyable evening socializing.",
+                "consequence": {
+                    "money": -40,
+                    "happiness": 6,
+                    "stress": -2
+                }
+            },
+            {
+                "text": "Dress to impress",
+                "outcome": "You buy something new and put extra effort into making a strong impression.",
+                "consequence": {
+                    "money": -100,
+                    "appearance": 3,
+                    "reputation": 4
+                }
+            },
+            {
+                "text": "Stay home",
+                "outcome": "You politely decline and enjoy the peaceful evening you originally planned.",
+                "consequence": {
+                    "happiness": 2,
+                    "stress": -4
+                }
+            },
+            {
+                "text": "Do not respond",
+                "outcome": "You ignore the invitation rather than telling your friend you cannot attend.",
+                "consequence": {
+                    "reputation": -2
+                }
+            }
+        ],
+        "created_at": "2026-08-15T18:55:15Z",
+        "updated_at": "2026-08-15T18:55:15Z"
+    },
+    {
+        "id": "f55d4c67-a062-4a5a-80be-c4fa56e45e2b",
+        "name": "Package Delivered by Mistake",
+        "description": "An expensive-looking package intended for someone several streets away is left at your door.",
+        "enabled": true,
+        "consequence": [],
+        "choices": [
+            {
+                "text": "Deliver it personally",
+                "outcome": "You take the package to the correct address and introduce yourself.",
+                "consequence": {
+                    "reputation": 5,
+                    "happiness": 2
+                }
+            },
+            {
+                "text": "Contact the delivery company",
+                "outcome": "You report the error and arrange for the package to be collected.",
+                "consequence": {
+                    "discipline": 2,
+                    "reputation": 3
+                }
+            },
+            {
+                "text": "Leave it outside",
+                "outcome": "You leave the package untouched and hope the courier returns for it.",
+                "consequence": []
+            },
+            {
+                "text": "Open and keep it",
+                "outcome": "You remove the label and claim the package as your own.",
+                "consequence": {
+                    "money": 250,
+                    "discipline": -6,
+                    "reputation": -8,
+                    "stress": 6
+                }
+            }
+        ],
+        "created_at": "2026-08-15T19:00:27Z",
+        "updated_at": "2026-08-15T19:00:27Z"
+    },
+    {
+        "id": "7a098d01-1604-4f2a-8c42-c361fcf0ae17",
+        "name": "Friend Announces an Engagement",
+        "description": "A close friend announces that they are getting married and asks you to attend the celebration. You congratulate the couple, purchase a small gift, and join their celebration.",
+        "enabled": true,
+        "consequence": {
+            "money": -75,
+            "happiness": 5,
+            "reputation": 2
+        },
+        "choices": [],
+        "created_at": "2026-08-15T19:01:09Z",
+        "updated_at": "2026-08-15T19:01:09Z"
+    },
+    {
+        "id": "14c63e5c-2bd1-47b7-be2d-219b12baf82c",
+        "name": "Small Inheritance",
+        "description": "A distant relative has left you $2,500 in their will.",
+        "enabled": true,
+        "consequence": [],
+        "choices": [
+            {
+                "text": "Save the inheritance",
+                "outcome": "You preserve the money as an emergency fund or future investment.",
+                "consequence": {
+                    "money": 2500,
+                    "discipline": 4,
+                    "stress": -3
+                }
+            },
+            {
+                "text": "Take a vacation",
+                "outcome": "You use most of the inheritance for a memorable trip.",
+                "consequence": {
+                    "money": 500,
+                    "happiness": 9,
+                    "stress": -7
+                }
+            },
+            {
+                "text": "Invest in education",
+                "outcome": "You spend the inheritance on courses and professional development.",
+                "consequence": {
+                    "intelligence": 6,
+                    "annualIncome": 750
+                }
+            },
+            {
+                "text": "Spend it impulsively",
+                "outcome": "You go on a shopping spree and quickly use almost all of the money.",
+                "consequence": {
+                    "money": 100,
+                    "happiness": 5,
+                    "discipline": -5
+                }
+            }
+        ],
+        "created_at": "2026-08-15T19:03:45Z",
+        "updated_at": "2026-08-15T19:03:45Z"
+    },
+    {
+        "id": "48f09b6c-721e-462e-9515-d9103dc07ff4",
+        "name": "Food Poisoning",
+        "description": "After eating a questionable meal, you become ill and must spend the day recovering.",
+        "enabled": true,
+        "consequence": [],
+        "choices": [
+            {
+                "text": "Rest at home",
+                "outcome": "You cancel your plans and give your body time to recover naturally.",
+                "consequence": {
+                    "health": -5,
+                    "happiness": -3,
+                    "stress": 2
+                }
+            },
+            {
+                "text": "Visit a clinic",
+                "outcome": "You seek medical help and receive treatment for the worst symptoms.",
+                "consequence": {
+                    "health": -2,
+                    "money": -100,
+                    "stress": 1
+                }
+            },
+            {
+                "text": "Push through it",
+                "outcome": "You refuse to change your schedule, making your condition considerably worse.",
+                "consequence": {
+                    "health": -8,
+                    "discipline": 2,
+                    "stress": 6
+                }
+            },
+            {
+                "text": "Complain to the restaurant",
+                "outcome": "You report the incident and receive a partial refund.",
+                "consequence": {
+                    "money": 50,
+                    "health": -5,
+                    "reputation": -1
+                }
+            }
+        ],
+        "created_at": "2026-08-15T19:07:16Z",
+        "updated_at": "2026-08-15T19:07:16Z"
+    },
+    {
+        "id": "9b651bb5-7d16-4e6e-856b-04e640ea30ba",
+        "name": "Forgotten Family Photograph",
+        "description": "You discover an old family photograph tucked inside a rarely opened book. You spend some time remembering the people and events captured in the photograph.",
+        "enabled": true,
+        "consequence": {
+            "happiness": 4,
+            "stress": -2
+        },
+        "choices": [],
+        "created_at": "2026-08-15T19:07:55Z",
+        "updated_at": "2026-08-15T19:07:55Z"
+    },
+    {
+        "id": "441f0054-192f-4b90-98ae-a7e8e4116b1f",
+        "name": "Selected for Jury Duty",
+        "description": "You receive an official notice requiring you to report for jury duty.",
+        "enabled": true,
+        "consequence": [],
+        "choices": [
+            {
+                "text": "Serve willingly",
+                "outcome": "You approach the responsibility seriously and learn about the justice system.",
+                "consequence": {
+                    "intelligence": 3,
+                    "discipline": 3,
+                    "stress": 4
+                }
+            },
+            {
+                "text": "Request a postponement",
+                "outcome": "You follow the proper process to move your service to a better date.",
+                "consequence": {
+                    "discipline": 1,
+                    "stress": 2
+                }
+            },
+            {
+                "text": "Try to avoid serving",
+                "outcome": "You make questionable excuses in an attempt to escape the responsibility.",
+                "consequence": {
+                    "discipline": -3,
+                    "reputation": -2,
+                    "stress": 5
+                }
+            },
+            {
+                "text": "Study the case carefully",
+                "outcome": "You become highly invested in understanding every detail presented.",
+                "consequence": {
+                    "intelligence": 5,
+                    "happiness": -2,
+                    "stress": 7
+                }
+            }
+        ],
+        "created_at": "2026-08-15T19:10:31Z",
+        "updated_at": "2026-08-15T19:10:31Z"
+    },
+    {
+        "id": "fe9a688f-099f-4ce3-bbc8-0a827fa15b28",
+        "name": "Trip Cancelled",
+        "description": "A trip you have been looking forward to is cancelled at the last moment.",
+        "enabled": true,
+        "consequence": [],
+        "choices": [
+            {
+                "text": "Accept a refund",
+                "outcome": "You recover the cost of the trip but lose the experience you anticipated.",
+                "consequence": {
+                    "money": 800,
+                    "happiness": -5,
+                    "stress": 4
+                }
+            },
+            {
+                "text": "Rebook the trip",
+                "outcome": "You pay the additional fees and arrange to travel on another date.",
+                "consequence": {
+                    "money": -150,
+                    "happiness": -2,
+                    "stress": 3
+                }
+            },
+            {
+                "text": "Take a local vacation",
+                "outcome": "You redirect part of the budget toward activities closer to home.",
+                "consequence": {
+                    "money": -300,
+                    "happiness": 4,
+                    "stress": -2
+                }
+            },
+            {
+                "text": "Stay home",
+                "outcome": "You cancel your vacation plans and use the unexpected free time to rest.",
+                "consequence": {
+                    "happiness": -2,
+                    "stress": -1
+                }
+            }
+        ],
+        "created_at": "2026-08-15T19:13:06Z",
+        "updated_at": "2026-08-15T19:13:06Z"
+    },
+    {
+        "id": "48d32e72-2e27-42b7-97df-4e7ef2a9a887",
+        "name": "Free Event Tickets",
+        "description": "A coworker gives you two free tickets to a concert or sporting event this weekend.",
+        "enabled": true,
+        "consequence": [],
+        "choices": [
+            {
+                "text": "Bring a friend",
+                "outcome": "You invite a friend and enjoy sharing the experience with them.",
+                "consequence": {
+                    "money": -60,
+                    "happiness": 8,
+                    "reputation": 3
+                }
+            },
+            {
+                "text": "Bring a family member",
+                "outcome": "You use the tickets to create a special family memory.",
+                "consequence": {
+                    "money": -60,
+                    "happiness": 7,
+                    "reputation": 4
+                }
+            },
+            {
+                "text": "Sell the tickets",
+                "outcome": "You turn the unexpected gift into extra cash.",
+                "consequence": {
+                    "money": 200,
+                    "reputation": -2
+                }
+            },
+            {
+                "text": "Give them away",
+                "outcome": "You pass the tickets to someone who would appreciate them more.",
+                "consequence": {
+                    "happiness": 2,
+                    "reputation": 5
+                }
+            }
+        ],
+        "created_at": "2026-08-15T19:15:32Z",
+        "updated_at": "2026-08-15T19:15:32Z"
+    },
+    {
+        "id": "1caf34fd-f624-4eb3-8173-898848b6e89f",
+        "name": "Witnessed an Accident",
+        "description": "You witness an accident and appear to be the only person who clearly saw what happened.",
+        "enabled": true,
+        "consequence": [],
+        "choices": [
+            {
+                "text": "Stop and help",
+                "outcome": "You assist the people involved until emergency services arrive.",
+                "consequence": {
+                    "health": -1,
+                    "reputation": 8,
+                    "stress": 5
+                }
+            },
+            {
+                "text": "Call emergency services",
+                "outcome": "You report the accident and provide the dispatcher with essential information.",
+                "consequence": {
+                    "reputation": 5,
+                    "stress": 3
+                }
+            },
+            {
+                "text": "Give a statement",
+                "outcome": "You remain at the scene long enough to provide an accurate witness account.",
+                "consequence": {
+                    "discipline": 3,
+                    "reputation": 4,
+                    "stress": 2
+                }
+            },
+            {
+                "text": "Walk away",
+                "outcome": "You decide that becoming involved would be too inconvenient.",
+                "consequence": {
+                    "discipline": -4,
+                    "reputation": -5,
+                    "stress": 4
+                }
+            }
+        ],
+        "created_at": "2026-08-15T19:17:55Z",
+        "updated_at": "2026-08-15T19:17:55Z"
+    },
+    {
+        "id": "5bf0a7c8-6c92-4020-88a7-4b1edbc0a8d9",
+        "name": "Locked Out of the House",
+        "description": "The door closes behind you, leaving you outside without your keys or phone.",
+        "enabled": true,
+        "consequence": [],
+        "choices": [
+            {
+                "text": "Ask a neighbour",
+                "outcome": "You borrow their phone and wait somewhere comfortable while arranging help.",
+                "consequence": {
+                    "reputation": 1,
+                    "stress": 3
+                }
+            },
+            {
+                "text": "Force the door",
+                "outcome": "You damage the lock and injure yourself slightly while getting inside.",
+                "consequence": {
+                    "money": -250,
+                    "health": -2,
+                    "stress": 4
+                }
+            },
+            {
+                "text": "Wait for someone",
+                "outcome": "You sit outside until another person with a key arrives.",
+                "consequence": {
+                    "happiness": -2,
+                    "stress": 4
+                }
+            },
+            {
+                "text": "Use a window",
+                "outcome": "You find a creative but uncomfortable way to enter through an unlocked window.",
+                "consequence": {
+                    "health": -3,
+                    "intelligence": 1,
+                    "stress": 3
+                }
+            }
+        ],
+        "created_at": "2026-08-15T19:20:05Z",
+        "updated_at": "2026-08-15T19:20:05Z"
+    },
+    {
+        "id": "1f54234a-e1a0-40f3-801b-387506343278",
+        "name": "Learned a New Skill",
+        "description": "A casual conversation introduces you to a subject that could become a useful new skill.",
+        "enabled": true,
+        "consequence": [],
+        "choices": [
+            {
+                "text": "Study it seriously",
+                "outcome": "You develop a regular practice schedule and work toward mastering the skill.",
+                "consequence": {
+                    "intelligence": 6,
+                    "discipline": 4,
+                    "stress": 2
+                }
+            },
+            {
+                "text": "Enjoy it as a hobby",
+                "outcome": "You explore the subject casually without putting pressure on yourself.",
+                "consequence": {
+                    "intelligence": 3,
+                    "happiness": 4
+                }
+            },
+            {
+                "text": "Turn it into a side job",
+                "outcome": "You use your developing ability to earn some additional income.",
+                "consequence": {
+                    "intelligence": 3,
+                    "money": 300,
+                    "annualIncome": 500,
+                    "stress": 3
+                }
+            },
+            {
+                "text": "Lose interest",
+                "outcome": "You experiment briefly but decide that the subject is not for you.",
+                "consequence": []
+            }
+        ],
+        "created_at": "2026-08-15T19:23:10Z",
+        "updated_at": "2026-08-15T19:23:10Z"
+    },
+    {
+        "id": "f8a0e287-1a6b-4b9c-be38-26c18eac4d95",
+        "name": "Handwritten Letter",
+        "description": "You receive a thoughtful handwritten letter from someone important to you.",
+        "enabled": true,
+        "consequence": [],
+        "choices": [
+            {
+                "text": "Write a letter back",
+                "outcome": "You take the time to create an equally thoughtful response.",
+                "consequence": {
+                    "happiness": 5,
+                    "reputation": 3,
+                    "stress": -2
+                }
+            },
+            {
+                "text": "Call the sender",
+                "outcome": "You phone them immediately and have a warm conversation.",
+                "consequence": {
+                    "reputation": 2,
+                    "happiness": 4
+                }
+            },
+            {
+                "text": "Save the letter",
+                "outcome": "You place it somewhere safe so that you can read it again in the future.",
+                "consequence": {
+                    "happiness": 2
+                }
+            },
+            {
+                "text": "Forget to respond",
+                "outcome": "You intend to answer later, but the letter eventually slips your mind.",
+                "consequence": {
+                    "reputation": -2
+                }
+            }
+        ],
+        "created_at": "2026-08-15T19:25:31Z",
+        "updated_at": "2026-08-15T19:25:31Z"
+    },
+    {
+        "id": "e7ec69f5-ec1f-4f5e-aea5-4b2a095fa5e8",
+        "name": "Local Celebrity Encounter",
+        "description": "You unexpectedly meet a local celebrity while going about your day.",
+        "enabled": true,
+        "consequence": [],
+        "choices": [
+            {
+                "text": "Ask for a photograph",
+                "outcome": "You politely request a quick picture to remember the encounter.",
+                "consequence": {
+                    "happiness": 4,
+                    "reputation": 1
+                }
+            },
+            {
+                "text": "Have a normal conversation",
+                "outcome": "You speak to them respectfully without drawing attention to their fame.",
+                "consequence": {
+                    "happiness": 3,
+                    "reputation": 3
+                }
+            },
+            {
+                "text": "Request a valuable autograph",
+                "outcome": "You obtain an autograph with the intention of selling it.",
+                "consequence": {
+                    "money": 50,
+                    "reputation": -2
+                }
+            },
+            {
+                "text": "Give them privacy",
+                "outcome": "You recognize them but choose not to interrupt their day.",
+                "consequence": {
+                    "discipline": 1
+                }
+            }
+        ],
+        "created_at": "2026-08-15T19:30:00Z",
+        "updated_at": "2026-08-15T19:30:00Z"
+    },
+    {
+        "id": "c5924b0b-d915-464c-9376-5f345a6ab0ae",
+        "name": "Treasured Possession Broken",
+        "description": "While cleaning, you accidentally break an item with significant sentimental value.",
+        "enabled": true,
+        "consequence": [],
+        "choices": [
+            {
+                "text": "Pay for a repair",
+                "outcome": "You hire a specialist to restore the item as well as possible.",
+                "consequence": {
+                    "money": -250,
+                    "happiness": -2,
+                    "stress": 3
+                }
+            },
+            {
+                "text": "Repair it yourself",
+                "outcome": "You carefully study repair techniques and attempt the restoration personally.",
+                "consequence": {
+                    "intelligence": 2,
+                    "happiness": -1,
+                    "stress": -4
+                }
+            },
+            {
+                "text": "Keep the pieces",
+                "outcome": "You cannot repair the item, but you are not ready to let it go.",
+                "consequence": {
+                    "happiness": -3
+                }
+            },
+            {
+                "text": "Throw it away",
+                "outcome": "You decide that keeping the broken object will only make you feel worse.",
+                "consequence": {
+                    "happiness": -5,
+                    "stress": -1
+                }
+            }
+        ],
+        "created_at": "2026-08-15T19:32:41Z",
+        "updated_at": "2026-08-15T19:32:41Z"
+    },
+    {
+        "id": "dcf8f46e-2c4e-4693-a351-b9e2dce17c90",
+        "name": "Asked to Give a Presentation",
+        "description": "You are unexpectedly asked to present an important topic in front of a large group.",
+        "enabled": true,
+        "consequence": [],
+        "choices": [
+            {
+                "text": "Prepare thoroughly",
+                "outcome": "You spend significant time researching, rehearsing, and polishing your presentation.",
+                "consequence": {
+                    "intelligence": 3,
+                    "discipline": 5,
+                    "reputation": 5,
+                    "stress": 5
+                }
+            },
+            {
+                "text": "Improvise",
+                "outcome": "You rely on your existing knowledge and speak without much preparation.",
+                "consequence": {
+                    "reputation": 2,
+                    "stress": 7
+                }
+            },
+            {
+                "text": "Decline",
+                "outcome": "You avoid the uncomfortable task, even though others were counting on you.",
+                "consequence": {
+                    "reputation": -3,
+                    "stress": -2
+                }
+            },
+            {
+                "text": "Ask for help",
+                "outcome": "You work with a colleague to create and deliver a stronger presentation.",
+                "consequence": {
+                    "intelligence": 2,
+                    "reputation": 1,
+                    "stress": 2
+                }
+            }
+        ],
+        "created_at": "2026-08-15T19:35:47Z",
+        "updated_at": "2026-08-15T19:35:47Z"
+    },
+    {
+        "id": "776fb05f-832d-40e0-ba2a-ce79302fd3db",
+        "name": "Garage-Sale Bargain",
+        "description": "At a garage sale, you discover a valuable collectible priced at only $10.",
+        "enabled": true,
+        "consequence": [],
+        "choices": [
+            {
+                "text": "Buy it and keep it",
+                "outcome": "You happily add the rare item to your personal collection.",
+                "consequence": {
+                    "money": -10,
+                    "happiness": 5
+                }
+            },
+            {
+                "text": "Buy and resell it",
+                "outcome": "You recognize its value and find a collector willing to pay much more.",
+                "consequence": {
+                    "money": 290,
+                    "intelligence": 2
+                }
+            },
+            {
+                "text": "Tell the seller",
+                "outcome": "You explain what the item is worth and give the owner a chance to reconsider.",
+                "consequence": {
+                    "happiness": 3,
+                    "reputation": 7
+                }
+            },
+            {
+                "text": "Walk away",
+                "outcome": "You decide that you do not need another possession, even at an excellent price.",
+                "consequence": {
+                    "discipline": 1
+                }
+            }
+        ],
+        "created_at": "2026-08-15T19:37:58Z",
+        "updated_at": "2026-08-15T19:37:58Z"
+    },
+    {
+        "id": "35099f81-e9a6-47b9-af4b-3e0f48baa97e",
+        "name": "New Baby in the Family",
+        "description": "A relative announces that they are expecting or adopting a child. You share in the family’s excitement and begin looking forward to meeting its newest member.",
+        "enabled": true,
+        "consequence": {
+            "happiness": 6,
+            "reputation": 2,
+            "stress": 1
+        },
+        "choices": [],
+        "created_at": "2026-08-15T19:39:23Z",
+        "updated_at": "2026-08-15T19:39:23Z"
+    },
+    {
+        "id": "4e718d0a-57b1-4e3a-bf01-eb9c65b78b9e",
+        "name": "Conversation with a Coworker",
+        "description": "A routine break turns into a surprisingly meaningful conversation with a coworker. You understand each other better and return to work feeling supported.",
+        "enabled": true,
+        "consequence": {
+            "happiness": 4,
+            "reputation": 3,
+            "stress": -3
+        },
+        "choices": [],
+        "created_at": "2026-08-15T19:40:16Z",
+        "updated_at": "2026-08-15T19:40:16Z"
+    },
+    {
+        "id": "9255b105-5a78-4e10-910d-045e4bf1345f",
+        "name": "Discovered a Water Leak",
+        "description": "You notice water pooling beneath a wall. A hidden pipe appears to be leaking.",
+        "enabled": true,
+        "consequence": [],
+        "choices": [
+            {
+                "text": "Call a professional",
+                "outcome": "You hire a plumber to repair the leak before the damage spreads.",
+                "consequence": {
+                    "money": -700,
+                    "stress": 4
+                }
+            },
+            {
+                "text": "Repair it yourself",
+                "outcome": "You purchase supplies and attempt a difficult repair after researching the problem.",
+                "consequence": {
+                    "money": -150,
+                    "intelligence": 3,
+                    "stress": 6
+                }
+            },
+            {
+                "text": "Ask a skilled friend",
+                "outcome": "A knowledgeable friend helps you repair the problem at a lower cost.",
+                "consequence": {
+                    "money": -100,
+                    "reputation": 1,
+                    "stress": 3
+                }
+            },
+            {
+                "text": "Ignore it",
+                "outcome": "You postpone the repair until the leak causes substantial property damage.",
+                "consequence": {
+                    "money": -1200,
+                    "discipline": -5,
+                    "stress": 9
+                }
+            }
+        ],
+        "created_at": "2026-08-15T19:43:10Z",
+        "updated_at": "2026-08-15T19:43:10Z"
+    },
+    {
+        "id": "38798db8-685a-4ea9-88d6-efc1829dcada",
+        "name": "Free Travel Upgrade",
+        "description": "An airline unexpectedly upgrades you to a much more comfortable seat at no charge. You enjoy extra space, better service, and a far more relaxing journey.",
+        "enabled": true,
+        "consequence": {
+            "happiness": 6,
+            "stress": -4,
+            "reputation": 1
+        },
+        "choices": [],
+        "created_at": "2026-08-15T19:45:40Z",
+        "updated_at": "2026-08-15T19:45:40Z"
+    },
+    {
+        "id": "ef0639ca-d397-4c43-9516-4cc4be8e2c45",
+        "name": "Long-Awaited Apology",
+        "description": "Someone who hurt you years ago contacts you with what appears to be a sincere apology.",
+        "enabled": true,
+        "consequence": [],
+        "choices": [
+            {
+                "text": "Accept the apology",
+                "outcome": "You forgive the person and allow yourself to let go of old resentment.",
+                "consequence": {
+                    "happiness": 6,
+                    "reputation": 2,
+                    "stress": -6
+                }
+            },
+            {
+                "text": "Discuss what happened",
+                "outcome": "You have a difficult but honest conversation about the past.",
+                "consequence": {
+                    "intelligence": 1,
+                    "happiness": 4,
+                    "stress": 2
+                }
+            },
+            {
+                "text": "Ask for more time",
+                "outcome": "You acknowledge the apology but explain that you are not ready to respond fully.",
+                "consequence": {
+                    "discipline": 2,
+                    "stress": -1
+                }
+            },
+            {
+                "text": "Reject it",
+                "outcome": "You tell the person that their apology has come too late.",
+                "consequence": {
+                    "happiness": -2,
+                    "stress": 3
+                }
+            }
+        ],
+        "created_at": "2026-08-15T19:48:18Z",
+        "updated_at": "2026-08-15T19:48:18Z"
+    },
+    {
+        "id": "fa8ca8ad-f42e-4a11-9204-1f297730e69c",
+        "name": "Favourite Business Closes",
+        "description": "A local shop or restaurant filled with good memories announces that it is closing permanently.",
+        "enabled": true,
+        "consequence": [],
+        "choices": [
+            {
+                "text": "Visit one last time",
+                "outcome": "You return for a final visit and say goodbye to the familiar staff.",
+                "consequence": {
+                    "money": -50,
+                    "happiness": 2,
+                    "stress": -2
+                }
+            },
+            {
+                "text": "Make a large purchase",
+                "outcome": "You spend extra money to support the business during its final days.",
+                "consequence": {
+                    "money": -150
+                }
+            },
+            {
+                "text": "Share your memories",
+                "outcome": "You post a thoughtful message describing what the business meant to you.",
+                "consequence": {
+                    "happiness": 1,
+                    "reputation": 2
+                }
+            },
+            {
+                "text": "Let it pass",
+                "outcome": "You feel disappointed but decide not to visit before it closes.",
+                "consequence": {
+                    "happiness": -2
+                }
+            }
+        ],
+        "created_at": "2026-08-15T19:53:43Z",
+        "updated_at": "2026-08-15T19:53:43Z"
+    },
+    {
+        "id": "95ee5ac6-72f9-41f6-9303-0478131a4af6",
+        "name": "Discovered a New Hobby",
+        "description": "You try an unfamiliar activity on a whim and discover that you genuinely enjoy it.",
+        "enabled": true,
+        "consequence": [],
+        "choices": [
+            {
+                "text": "Buy beginner equipment",
+                "outcome": "You invest in the basic supplies needed to pursue the hobby regularly.",
+                "consequence": {
+                    "money": -250,
+                    "happiness": 7,
+                    "stress": -4
+                }
+            },
+            {
+                "text": "Take a class",
+                "outcome": "You register for lessons so that you can develop proper techniques.",
+                "consequence": {
+                    "money": -150,
+                    "intelligence": 4,
+                    "happiness": 5
+                }
+            },
+            {
+                "text": "Join a local group",
+                "outcome": "You meet other enthusiasts and make the hobby a social activity.",
+                "consequence": {
+                    "money": -50,
+                    "happiness": 5,
+                    "reputation": 4
+                }
+            },
+            {
+                "text": "Keep it casual",
+                "outcome": "You enjoy the hobby occasionally without making a major commitment.",
+                "consequence": {
+                    "happiness": 3,
+                    "stress": -2
+                }
+            }
+        ],
+        "created_at": "2026-08-15T19:56:22Z",
+        "updated_at": "2026-08-15T19:56:22Z"
+    },
+    {
+        "id": "e551f735-c18f-43b7-a3c8-8f5d67aa2b64",
+        "name": "Power and Internet Outage",
+        "description": "A neighbourhood outage leaves you without electricity or internet for most of the evening.",
+        "enabled": true,
+        "consequence": [],
+        "choices": [
+            {
+                "text": "Read a book",
+                "outcome": "You find a comfortable place and spend the evening reading by battery-powered light.",
+                "consequence": {
+                    "intelligence": 3,
+                    "stress": -2
+                }
+            },
+            {
+                "text": "Spend time with others",
+                "outcome": "You use the interruption as an opportunity for conversation or games.",
+                "consequence": {
+                    "happiness": 5,
+                    "reputation": 2
+                }
+            },
+            {
+                "text": "Go out",
+                "outcome": "You visit a restaurant, theatre, or another place unaffected by the outage.",
+                "consequence": {
+                    "money": -60,
+                    "happiness": 3
+                }
+            },
+            {
+                "text": "Complain all evening",
+                "outcome": "You focus on the inconvenience and allow it to ruin your night.",
+                "consequence": {
+                    "happiness": -4,
+                    "stress": 6
+                }
+            }
+        ],
+        "created_at": "2026-08-15T19:58:29Z",
+        "updated_at": "2026-08-15T19:58:29Z"
+    },
+    {
+        "id": "456b82cb-422e-4177-a3f6-8711bc604d3f",
+        "name": "Rumour Spreading About You",
+        "description": "You learn that an untrue and embarrassing rumour about you is circulating.",
+        "enabled": true,
+        "consequence": [],
+        "choices": [
+            {
+                "text": "Confront the source calmly",
+                "outcome": "You speak privately with the person responsible and firmly correct the story.",
+                "consequence": {
+                    "discipline": 3,
+                    "reputation": 3,
+                    "stress": 4
+                }
+            },
+            {
+                "text": "Deny it publicly",
+                "outcome": "You make a public statement in an attempt to protect your reputation.",
+                "consequence": {
+                    "reputation": 1,
+                    "stress": 5
+                }
+            },
+            {
+                "text": "Ignore it",
+                "outcome": "You refuse to give the rumour additional attention and wait for it to fade.",
+                "consequence": {
+                    "discipline": 2,
+                    "reputation": -2,
+                    "stress": 3
+                }
+            },
+            {
+                "text": "Spread a rumour in return",
+                "outcome": "You retaliate by inventing an embarrassing story about the other person.",
+                "consequence": {
+                    "discipline": -5,
+                    "reputation": -7,
+                    "stress": 5
+                }
+            }
+        ],
+        "created_at": "2026-08-15T20:00:38Z",
+        "updated_at": "2026-08-15T20:00:38Z"
+    },
+    {
+        "id": "75dbf1fb-83d5-4b87-aa57-434cf8e98ab2",
+        "name": "Recognition for Past Work",
+        "description": "Work you completed years ago is rediscovered and praised by people who benefited from it. The recognition improves your professional standing and reminds you that your efforts mattered.",
+        "enabled": true,
+        "consequence": {
+            "happiness": 6,
+            "reputation": 8,
+            "annualIncome": 500
+        },
+        "choices": [],
+        "created_at": "2026-08-15T20:01:16Z",
+        "updated_at": "2026-08-15T20:01:16Z"
+    },
+    {
+        "id": "16c554fb-6ef3-4198-bd5b-f3af62e708ff",
+        "name": "Mistaken for Someone Else",
+        "description": "A stranger enthusiastically approaches you, convinced that you are someone they know.",
+        "enabled": true,
+        "consequence": [],
+        "choices": [
+            {
+                "text": "Correct them politely",
+                "outcome": "You gently explain the mistake without making the stranger feel foolish.",
+                "consequence": {
+                    "reputation": 1
+                }
+            },
+            {
+                "text": "Play along briefly",
+                "outcome": "You respond as if you recognize them before revealing the amusing misunderstanding.",
+                "consequence": {
+                    "happiness": 3,
+                    "discipline": -1
+                }
+            },
+            {
+                "text": "Pretend to be the person",
+                "outcome": "You continue the deception to see how long you can maintain it.",
+                "consequence": {
+                    "happiness": 2,
+                    "reputation": -3,
+                    "stress": 3
+                }
+            },
+            {
+                "text": "Walk away",
+                "outcome": "You leave without explaining why you are ignoring them.",
+                "consequence": {
+                    "reputation": -1
+                }
+            }
+        ],
+        "created_at": "2026-08-15T20:02:57Z",
+        "updated_at": "2026-08-15T20:02:57Z"
+    },
+    {
+        "id": "fb3dca08-02c7-42e0-a99d-a6a0f7333db7",
+        "name": "Unexpected Day Off",
+        "description": "A closure or scheduling error gives you an unplanned day away from work or school.",
+        "enabled": true,
+        "consequence": [],
+        "choices": [
+            {
+                "text": "Rest and recover",
+                "outcome": "You sleep late and give yourself permission to do very little.",
+                "consequence": {
+                    "health": 3,
+                    "happiness": 4,
+                    "stress": -6
+                }
+            },
+            {
+                "text": "Catch up on chores",
+                "outcome": "You use the free time to complete tasks you have been postponing.",
+                "consequence": {
+                    "discipline": 5,
+                    "stress": -3
+                }
+            },
+            {
+                "text": "Have an adventure",
+                "outcome": "You spend the day enjoying an activity you normally do not have time for.",
+                "consequence": {
+                    "money": -100,
+                    "happiness": 7,
+                    "stress": -4
+                }
+            },
+            {
+                "text": "Improve a skill",
+                "outcome": "You devote the unexpected free time to study or deliberate practice.",
+                "consequence": {
+                    "intelligence": 4,
+                    "discipline": 3,
+                    "stress": 1
+                }
+            }
+        ],
+        "created_at": "2026-08-15T20:05:09Z",
+        "updated_at": "2026-08-15T20:05:09Z"
+    },
+    {
+        "id": "318d20b7-0657-4129-9d98-5426e9181d5f",
+        "name": "Life-Changing Opportunity",
+        "description": "You receive an opportunity in another city that could significantly change your career and personal life.",
+        "enabled": true,
+        "consequence": [],
+        "choices": [
+            {
+                "text": "Accept and relocate",
+                "outcome": "You leave behind your familiar routine to pursue a demanding but lucrative future.",
+                "consequence": {
+                    "money": -3000,
+                    "annualIncome": 12000,
+                    "happiness": 5,
+                    "stress": 10
+                }
+            },
+            {
+                "text": "Negotiate remote work",
+                "outcome": "You propose taking the position without permanently leaving your current home.",
+                "consequence": {
+                    "annualIncome": 8000,
+                    "intelligence": 2,
+                    "reputation": 3,
+                    "stress": 4
+                }
+            },
+            {
+                "text": "Ask loved ones for advice",
+                "outcome": "You discuss the opportunity with the people who would be affected by your decision.",
+                "consequence": {
+                    "intelligence": 2,
+                    "happiness": 2,
+                    "stress": 2
+                }
+            },
+            {
+                "text": "Decline the opportunity",
+                "outcome": "You choose stability and remain with your existing life.",
+                "consequence": {
+                    "happiness": 1,
+                    "stress": -3
+                }
+            }
+        ],
+        "created_at": "2026-08-15T20:08:15Z",
+        "updated_at": "2026-08-15T20:08:15Z"
     }
 ]
