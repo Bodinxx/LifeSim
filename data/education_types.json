@@ -1,0 +1,11 @@
+[
+    {"id": "secondary", "label": "Secondary", "enabled": true},
+    {"id": "academy", "label": "Academy", "enabled": true},
+    {"id": "apprenticeship", "label": "Apprenticeship", "enabled": true},
+    {"id": "agricultural training", "label": "Agricultural training", "enabled": true},
+    {"id": "law degree", "label": "Law degree", "enabled": true},
+    {"id": "medical school", "label": "Medical school", "enabled": true},
+    {"id": "teaching degree", "label": "Teaching degree", "enabled": true},
+    {"id": "tertiary", "label": "Tertiary", "enabled": true},
+    {"id": "trade certification", "label": "Trade certification", "enabled": true}
+]

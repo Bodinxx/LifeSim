@@ -23,6 +23,7 @@ define('COUNTRIES_FILE', DATA_PATH . '/countries.json');
 define('CITIES_FILE', DATA_PATH . '/cities.json');
 define('PROFESSIONS_FILE', DATA_PATH . '/professions.json');
 define('WORLD_EVENTS_FILE', DATA_PATH . '/world_events.json');
+define('EDUCATION_TYPES_FILE', DATA_PATH . '/education_types.json');
 
 // Default admin username
 define('ADMIN_DEFAULT_USERNAME', 'admin');

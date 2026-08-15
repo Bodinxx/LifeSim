@@ -5,6 +5,7 @@
         <li><a href="events.php">Events</a></li>
         <li><a href="countries.php">Countries</a></li>
         <li><a href="professions.php">Professions</a></li>
+        <li><a href="education_types.php">Education Types</a></li>
         <li><a href="world_events.php">World Events</a></li>
         <li><a href="log.php">Change Log</a></li>
         <li class="admin-nav-spacer"></li>
