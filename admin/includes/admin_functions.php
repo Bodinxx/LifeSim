@@ -770,7 +770,8 @@ function delete_education_type(string $id): bool
 function education_type_from_post(string $originalId = ''): array
 {
     $type = blank_education_type();
-    $type['id'] = trim($_POST['id'] ?? '');
+    // When editing, always use the original ID (ignore any tampered POST value).
+    $type['id'] = $originalId !== '' ? $originalId : trim($_POST['id'] ?? '');
     $type['label'] = trim($_POST['label'] ?? '');
     $type['enabled'] = isset($_POST['enabled']);
     return ['type' => $type, 'errors' => validate_education_type($type), 'original_id' => $originalId];
