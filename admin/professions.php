@@ -52,7 +52,10 @@ if ($action === 'edit' && $id !== '') {
 
 $saved = !empty($_GET['saved']);
 $professions = get_all_professions();
-usort($professions, fn($a, $b) => strcasecmp($a['name'] ?? '', $b['name'] ?? ''));
+usort($professions, function ($a, $b) {
+    $cat = strcasecmp($a['category'] ?? '', $b['category'] ?? '');
+    return $cat !== 0 ? $cat : strcasecmp($a['name'] ?? '', $b['name'] ?? '');
+});
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -75,7 +78,11 @@ usort($professions, fn($a, $b) => strcasecmp($a['name'] ?? '', $b['name'] ?? '')
     <table class="admin-table">
         <thead><tr><th>Name</th><th>Category</th><th>Levels</th><th>Status</th><th>Actions</th></tr></thead>
         <tbody>
-        <?php foreach ($professions as $item): ?>
+        <?php $currentCategory = null; foreach ($professions as $item): ?>
+            <?php if ($item['category'] !== $currentCategory): ?>
+                <?php $currentCategory = $item['category']; ?>
+                <tr><th colspan="5" class="admin-table-category"><?= h($currentCategory) ?></th></tr>
+            <?php endif; ?>
             <tr>
                 <td><?= h($item['name']) ?></td>
                 <td><?= h($item['category']) ?></td>
