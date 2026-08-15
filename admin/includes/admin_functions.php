@@ -337,13 +337,13 @@ function validate_country(array $country): array
     if ($country['name'] === '') {
         $errors[] = 'Country name is required.';
     }
-    if (!$country['cities']) {
+    if (empty($country['cities'])) {
         $errors[] = 'At least one city is required.';
     }
     return $errors;
 }
 
-function upsert_country(array $country): array
+function upsert_country(array $country, string $originalCode = ''): array
 {
     $country = normalise_country($country);
     $errors = validate_country($country);
@@ -352,9 +352,10 @@ function upsert_country(array $country): array
     }
 
     $countries = get_all_countries();
+    $matchCode = strtoupper(trim($originalCode)) !== '' ? strtoupper(trim($originalCode)) : $country['code'];
     $found = false;
     foreach ($countries as &$existing) {
-        if ($existing['code'] === $country['code']) {
+        if ($existing['code'] === $matchCode) {
             $existing = $country;
             $found = true;
             break;
@@ -474,7 +475,7 @@ function validate_profession(array $profession): array
     return $errors;
 }
 
-function upsert_profession(array $profession): array
+function upsert_profession(array $profession, string $originalId = ''): array
 {
     $profession = normalise_profession($profession);
     $errors = validate_profession($profession);
@@ -483,9 +484,10 @@ function upsert_profession(array $profession): array
     }
 
     $professions = get_all_professions();
+    $matchId = trim($originalId) !== '' ? trim($originalId) : $profession['id'];
     $found = false;
     foreach ($professions as &$existing) {
-        if ($existing['id'] === $profession['id']) {
+        if ($existing['id'] === $matchId) {
             $existing = $profession;
             $found = true;
             break;

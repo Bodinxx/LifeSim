@@ -115,7 +115,7 @@ const SaveSystem = (() => {
 
         next.modules = next.modules || {};
         next.moduleList = Object.keys(next.modules);
-        next.saveFormatVersion = SAVE_FORMAT_VER;
+        next.saveFormatVersion = version;
 
         return next;
     }

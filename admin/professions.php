@@ -16,13 +16,14 @@ $profession = blank_profession();
 $isEdit = false;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $isEdit = trim($_POST['existing_id'] ?? '') !== '';
-    $posted = profession_from_post(trim($_POST['existing_id'] ?? ''));
+    $originalId = trim($_POST['existing_id'] ?? '');
+    $isEdit = $originalId !== '';
+    $posted = profession_from_post($originalId);
     $profession = $posted['profession'];
     $errors = $posted['errors'];
 
     if (!$errors) {
-        $errors = upsert_profession($profession);
+        $errors = upsert_profession($profession, $originalId);
         if (!$errors) {
             admin_log($isEdit ? 'profession_updated' : 'profession_created', ['id' => $profession['id'], 'name' => $profession['name']]);
             header('Location: professions.php?saved=1');

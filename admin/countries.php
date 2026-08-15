@@ -13,22 +13,24 @@ $action = $_GET['action'] ?? 'list';
 $code = strtoupper($_GET['code'] ?? '');
 $errors = [];
 $country = blank_country();
+$isEdit = false;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $existingCountry = find_country(strtoupper(trim($_POST['code'] ?? '')));
+    $originalCode = trim($_POST['original_code'] ?? '');
+    $isEdit = $originalCode !== '';
     $posted = country_from_post();
     $country = $posted['country'];
     $errors = $posted['errors'];
 
     if (!$errors) {
-        $errors = upsert_country($country);
+        $errors = upsert_country($country, $originalCode);
         if (!$errors) {
-            admin_log($existingCountry ? 'country_updated' : 'country_created', ['code' => $country['code'], 'name' => $country['name']]);
+            admin_log($isEdit ? 'country_updated' : 'country_created', ['code' => $country['code'], 'name' => $country['name']]);
             header('Location: countries.php?saved=1');
             exit;
         }
     }
-    $action = 'edit';
+    $action = $isEdit ? 'edit' : 'add';
 }
 
 if ($action === 'toggle' && $code !== '') {
@@ -91,6 +93,7 @@ usort($countries, fn($a, $b) => strcasecmp($a['name'] ?? '', $b['name'] ?? ''));
     <h1><?= $action === 'edit' ? 'Edit Country' : 'Add Country' ?></h1>
     <?php if ($errors): ?><ul class="admin-error-list"><?php foreach ($errors as $error): ?><li><?= h($error) ?></li><?php endforeach; ?></ul><?php endif; ?>
     <form method="post" action="countries.php" class="admin-form">
+        <input type="hidden" name="original_code" value="<?= h($action === 'edit' ? $country['code'] : '') ?>">
         <label for="code">Country code <span class="required">*</span></label>
         <input type="text" id="code" name="code" maxlength="3" required value="<?= h($country['code']) ?>">
         <label for="name">Country name <span class="required">*</span></label>

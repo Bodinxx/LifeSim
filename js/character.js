@@ -69,6 +69,7 @@ const Character = (() => {
 
     function normalize(raw = {}) {
         const base = baseCharacter();
+        const ageValue = toWholeNumber(raw.age, 0);
         const firstName = String(raw.firstName ?? '').trim();
         const lastName = String(raw.lastName ?? '').trim();
         const combinedName = [firstName, lastName].filter(Boolean).join(' ').trim();
@@ -102,8 +103,8 @@ const Character = (() => {
             countryOfOrigin: country,
             cityOfOrigin: city,
             birthday,
-            age: toWholeNumber(raw.age, 0),
-            lifeStage: String(raw.lifeStage ?? lifeStageFromAge(toWholeNumber(raw.age, 0))) || lifeStageFromAge(toWholeNumber(raw.age, 0)),
+            age: ageValue,
+            lifeStage: String(raw.lifeStage ?? lifeStageFromAge(ageValue)) || lifeStageFromAge(ageValue),
             health: clampScore(raw.health ?? base.health),
             happiness: clampScore(raw.happiness ?? base.happiness),
             intelligence: clampScore(raw.intelligence ?? base.intelligence),
@@ -269,7 +270,8 @@ const Character = (() => {
     }
 
     function appendHistoryEntries(character, entries = []) {
-        let next = normalize(character);
+        const next = normalize(character);
+        const historyEntries = [];
         entries.forEach((entry) => {
             if (!entry || typeof entry !== 'object') {
                 return;
@@ -278,13 +280,15 @@ const Character = (() => {
             if (!text) {
                 return;
             }
-            const historyEntry = createHistoryEntry(entry.age ?? next.age, text, entry.category ?? 'life', entry);
-            next = normalize(Object.assign({}, next, {
-                eventHistory: [...(next.eventHistory || []), historyEntry],
-                updatedAt: historyEntry.timestamp,
-            }));
+            historyEntries.push(createHistoryEntry(entry.age ?? next.age, text, entry.category ?? 'life', entry));
         });
-        return next;
+        if (!historyEntries.length) {
+            return next;
+        }
+        return normalize(Object.assign({}, next, {
+            eventHistory: [...(next.eventHistory || []), ...historyEntries],
+            updatedAt: historyEntries[historyEntries.length - 1].timestamp,
+        }));
     }
 
     function generateUUID() {

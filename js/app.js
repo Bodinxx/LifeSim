@@ -22,6 +22,8 @@ const App = (() => {
         female: ['Olivia', 'Emma', 'Ava', 'Sophia', 'Mia', 'Amelia', 'Ella', 'Grace', 'Chloe', 'Ruby'],
         'non-binary': ['Riley', 'Avery', 'Quinn', 'Taylor', 'Jordan', 'Casey', 'Alex', 'Morgan', 'Parker', 'Reese'],
     };
+    const MAX_RELATION_ENTRIES_PER_YEAR = 4;
+    const MAX_LIVING_FRIENDS = 12;
     const LAST_NAMES = ['Smith', 'Patel', 'Johnson', 'Garcia', 'Nguyen', 'Brown', 'Taylor', 'Lee', 'Wilson', 'Martin'];
     const PET_NAMES = ['Milo', 'Luna', 'Coco', 'Nala', 'Buddy', 'Pepper', 'Poppy', 'Rocky', 'Nova', 'Scout'];
     const PET_SPECIES = ['Dog', 'Cat', 'Rabbit', 'Parrot'];
@@ -216,12 +218,17 @@ const App = (() => {
             return;
         }
 
-        _setText('event-overlay-title', overlay.title || 'Life Event');
-        document.getElementById('event-overlay-body').textContent = overlay.description || '';
-
+        const body = document.getElementById('event-overlay-body');
         const choices = document.getElementById('event-overlay-choices');
         const actions = document.getElementById('event-overlay-actions');
-        if (!choices || !actions) return;
+        if (!body || !choices || !actions) {
+            _state.activeOverlay = null;
+            _state.overlayQueue = [];
+            _toggleOverlay('event-overlay', false);
+            return;
+        }
+        _setText('event-overlay-title', overlay.title || 'Life Event');
+        body.textContent = overlay.description || '';
         choices.innerHTML = '';
 
         if (overlay.kind === 'choice-event' && overlay.event?.choices?.length) {
@@ -278,7 +285,9 @@ const App = (() => {
 
         _setText('char-name', character.name);
         _setText('char-age', `Age ${character.age} — ${character.lifeStage}`);
-        _setText('char-origin', `${character.gender} • ${character.cityOfOrigin}, ${character.countryOfOrigin} • Birthday ${character.birthday.display}`);
+        const originParts = [character.cityOfOrigin, character.countryOfOrigin].filter(Boolean).join(', ');
+        const originLine = [character.gender, originParts, `Birthday ${character.birthday.display}`].filter(Boolean).join(' • ');
+        _setText('char-origin', originLine || '—');
         _setProgress('attr-health', 'attr-health-bar', character.health);
         _setProgress('attr-happiness', 'attr-happiness-bar', character.happiness);
         _setProgress('attr-intel', 'attr-intel-bar', character.intelligence);
@@ -437,7 +446,7 @@ const App = (() => {
         const professions = _state.professions.length ? _state.professions : [];
         const makeParent = (label, gender, householdRole) => {
             const profession = _randomFrom(professions);
-            const level = profession?.levels?.[Math.floor(Math.random() * Math.max(profession.levels.length - 1, 1))] || null;
+            const level = profession?.levels?.length ? profession.levels[Math.floor(Math.random() * profession.levels.length)] : null;
             const firstName = _randomFirstName(gender);
             return Character.createRelation({
                 relationType: 'parent',
@@ -552,7 +561,8 @@ const App = (() => {
             return next;
         });
 
-        if (character.age >= 5 && Math.random() < 0.25) {
+        const livingFriends = relations.filter((relation) => relation.relationType === 'friend' && relation.alive);
+        if (character.age >= 5 && livingFriends.length < MAX_LIVING_FRIENDS && Math.random() < 0.25) {
             const gender = _randomFrom(Character.GENDERS);
             const friendFirstName = _randomFirstName(gender);
             const friendLastName = _randomFrom(LAST_NAMES);
@@ -579,7 +589,7 @@ const App = (() => {
 
         let nextCharacter = Character.normalize(Object.assign({}, character, { relations, relationships: relations }));
         if (entries.length) {
-            nextCharacter = Character.appendHistoryEntries(nextCharacter, entries.slice(0, 4));
+            nextCharacter = Character.appendHistoryEntries(nextCharacter, entries.slice(0, MAX_RELATION_ENTRIES_PER_YEAR));
         }
         return nextCharacter;
     }
