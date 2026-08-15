@@ -1,0 +1,12 @@
+{
+    "ARG": ["Buenos Aires", "Cordoba", "Rosario", "Mendoza", "La Plata", "Salta", "Mar del Plata", "San Miguel de Tucuman", "Santa Fe", "Neuquen"],
+    "AUS": ["Sydney", "Melbourne", "Brisbane", "Perth", "Adelaide", "Canberra", "Hobart", "Darwin", "Gold Coast", "Newcastle"],
+    "BRA": ["Sao Paulo", "Rio de Janeiro", "Brasilia", "Salvador", "Fortaleza", "Belo Horizonte", "Manaus", "Curitiba", "Recife", "Porto Alegre"],
+    "CAN": ["Toronto", "Vancouver", "Montreal", "Calgary", "Ottawa", "Edmonton", "Winnipeg", "Halifax", "Quebec City", "Victoria"],
+    "DEU": ["Berlin", "Hamburg", "Munich", "Cologne", "Frankfurt", "Stuttgart", "Dusseldorf", "Leipzig", "Dortmund", "Bremen"],
+    "ESP": ["Madrid", "Barcelona", "Valencia", "Seville", "Bilbao", "Malaga", "Zaragoza", "Murcia", "Palma", "Granada"],
+    "FRA": ["Paris", "Lyon", "Marseille", "Toulouse", "Nice", "Nantes", "Strasbourg", "Montpellier", "Bordeaux", "Lille"],
+    "IND": ["Mumbai", "Delhi", "Bengaluru", "Hyderabad", "Chennai", "Kolkata", "Pune", "Ahmedabad", "Jaipur", "Lucknow"],
+    "JPN": ["Tokyo", "Osaka", "Kyoto", "Yokohama", "Sapporo", "Nagoya", "Fukuoka", "Kobe", "Sendai", "Hiroshima"],
+    "USA": ["New York", "Los Angeles", "Chicago", "Houston", "Phoenix", "Seattle", "Boston", "Atlanta", "Denver", "Miami"]
+}

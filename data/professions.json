@@ -1,0 +1,136 @@
+[
+    {
+        "id": "law_enforcement",
+        "name": "Law Enforcement",
+        "category": "Public Service",
+        "education": "secondary",
+        "enabled": true,
+        "levels": [
+            {"title":"Police Recruit","minWage":28000,"maxWage":36000,"education":"secondary"},
+            {"title":"Patrol Constable","minWage":36000,"maxWage":48000,"education":"secondary"},
+            {"title":"Senior Constable","minWage":48000,"maxWage":62000,"education":"academy"},
+            {"title":"Sergeant","minWage":62000,"maxWage":76000,"education":"academy"},
+            {"title":"Inspector","minWage":76000,"maxWage":95000,"education":"academy"}
+        ]
+    },
+    {
+        "id": "legal",
+        "name": "Legal",
+        "category": "Professional",
+        "education": "tertiary",
+        "enabled": true,
+        "levels": [
+            {"title":"Law Student","minWage":0,"maxWage":12000,"education":"tertiary"},
+            {"title":"Legal Trainee","minWage":22000,"maxWage":32000,"education":"tertiary"},
+            {"title":"Associate Lawyer","minWage":42000,"maxWage":70000,"education":"law degree"},
+            {"title":"Senior Associate","minWage":70000,"maxWage":110000,"education":"law degree"},
+            {"title":"Partner","minWage":120000,"maxWage":250000,"education":"law degree"}
+        ]
+    },
+    {
+        "id": "medicine",
+        "name": "Medicine",
+        "category": "Healthcare",
+        "education": "medical school",
+        "enabled": true,
+        "levels": [
+            {"title":"Medical Student","minWage":0,"maxWage":12000,"education":"tertiary"},
+            {"title":"Medical Resident","minWage":38000,"maxWage":52000,"education":"medical school"},
+            {"title":"Licensed Physician","minWage":70000,"maxWage":120000,"education":"medical school"},
+            {"title":"Senior Physician","minWage":120000,"maxWage":180000,"education":"medical school"},
+            {"title":"Chief Physician","minWage":180000,"maxWage":260000,"education":"medical school"}
+        ]
+    },
+    {
+        "id": "cook",
+        "name": "Cook",
+        "category": "Hospitality",
+        "education": "secondary",
+        "enabled": true,
+        "levels": [
+            {"title":"Line Cook","minWage":22000,"maxWage":28000,"education":"secondary"},
+            {"title":"Head Cook","minWage":28000,"maxWage":36000,"education":"secondary"},
+            {"title":"Junior Chef","minWage":36000,"maxWage":44000,"education":"apprenticeship"},
+            {"title":"Head Chef","minWage":44000,"maxWage":62000,"education":"apprenticeship"}
+        ]
+    },
+    {
+        "id": "teacher",
+        "name": "Teacher",
+        "category": "Education",
+        "education": "tertiary",
+        "enabled": true,
+        "levels": [
+            {"title":"Teacher Aide","minWage":24000,"maxWage":32000,"education":"secondary"},
+            {"title":"Primary Teacher","minWage":36000,"maxWage":52000,"education":"teaching degree"},
+            {"title":"Senior Teacher","minWage":52000,"maxWage":68000,"education":"teaching degree"},
+            {"title":"Department Head","minWage":68000,"maxWage":86000,"education":"teaching degree"}
+        ]
+    },
+    {
+        "id": "software",
+        "name": "Software Development",
+        "category": "Technology",
+        "education": "tertiary",
+        "enabled": true,
+        "levels": [
+            {"title":"Junior Developer","minWage":42000,"maxWage":62000,"education":"tertiary"},
+            {"title":"Developer","minWage":62000,"maxWage":90000,"education":"tertiary"},
+            {"title":"Senior Developer","minWage":90000,"maxWage":130000,"education":"tertiary"},
+            {"title":"Tech Lead","minWage":120000,"maxWage":160000,"education":"tertiary"}
+        ]
+    },
+    {
+        "id": "journalism",
+        "name": "Journalism",
+        "category": "Media",
+        "education": "tertiary",
+        "enabled": true,
+        "levels": [
+            {"title":"Student Reporter","minWage":0,"maxWage":10000,"education":"secondary"},
+            {"title":"Junior Reporter","minWage":26000,"maxWage":34000,"education":"tertiary"},
+            {"title":"Staff Reporter","minWage":34000,"maxWage":50000,"education":"tertiary"},
+            {"title":"Senior Correspondent","minWage":50000,"maxWage":78000,"education":"tertiary"},
+            {"title":"Editor","minWage":78000,"maxWage":110000,"education":"tertiary"}
+        ]
+    },
+    {
+        "id": "construction",
+        "name": "Construction",
+        "category": "Trades",
+        "education": "secondary",
+        "enabled": true,
+        "levels": [
+            {"title":"Apprentice","minWage":24000,"maxWage":32000,"education":"secondary"},
+            {"title":"Qualified Tradesperson","minWage":36000,"maxWage":52000,"education":"apprenticeship"},
+            {"title":"Site Supervisor","minWage":52000,"maxWage":70000,"education":"apprenticeship"},
+            {"title":"Project Manager","minWage":70000,"maxWage":95000,"education":"trade certification"}
+        ]
+    },
+    {
+        "id": "retail",
+        "name": "Retail",
+        "category": "Service",
+        "education": "secondary",
+        "enabled": true,
+        "levels": [
+            {"title":"Shop Assistant","minWage":20000,"maxWage":26000,"education":"secondary"},
+            {"title":"Senior Assistant","minWage":26000,"maxWage":32000,"education":"secondary"},
+            {"title":"Store Supervisor","minWage":32000,"maxWage":42000,"education":"secondary"},
+            {"title":"Store Manager","minWage":42000,"maxWage":65000,"education":"secondary"}
+        ]
+    },
+    {
+        "id": "farming",
+        "name": "Farming",
+        "category": "Agriculture",
+        "education": "secondary",
+        "enabled": true,
+        "levels": [
+            {"title":"Farm Hand","minWage":22000,"maxWage":30000,"education":"secondary"},
+            {"title":"Livestock Worker","minWage":30000,"maxWage":42000,"education":"secondary"},
+            {"title":"Farm Manager","minWage":42000,"maxWage":62000,"education":"agricultural training"},
+            {"title":"Property Owner","minWage":62000,"maxWage":120000,"education":"agricultural training"}
+        ]
+    }
+]

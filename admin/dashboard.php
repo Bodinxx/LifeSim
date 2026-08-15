@@ -13,12 +13,12 @@ if (admin_password_is_default()) {
     exit;
 }
 
-$events         = get_all_events();
-$enabled_count  = count(array_filter($events, fn($e) => !empty($e['enabled'])));
-$disabled_count = count($events) - $enabled_count;
-
-$log        = read_json_file(ADMIN_LOG_FILE, []);
-$recent_log = array_slice(array_reverse($log), 0, 5);
+$events = get_all_events();
+$countries = get_all_countries();
+$professions = get_all_professions();
+$worldEvents = get_all_world_events();
+$log = read_json_file(ADMIN_LOG_FILE, []);
+$recentLog = array_slice(array_reverse($log), 0, 5);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -35,26 +35,34 @@ $recent_log = array_slice(array_reverse($log), 0, 5);
 <main class="admin-main">
     <h1>Dashboard</h1>
 
-    <div class="admin-stat-card admin-stat-card--single">
-        <span class="stat-item"><span class="stat-value"><?= count($events) ?></span> <span class="stat-label">Total</span></span>
-        <span class="stat-divider">|</span>
-        <span class="stat-item"><span class="stat-value stat-value--enabled"><?= $enabled_count ?></span> <span class="stat-label">Enabled</span></span>
-        <span class="stat-divider">|</span>
-        <span class="stat-item"><span class="stat-value stat-value--disabled"><?= $disabled_count ?></span> <span class="stat-label">Disabled</span></span>
+    <div class="admin-quick-links" style="margin-bottom:2rem;">
+        <div class="admin-stat-card admin-stat-card--single">
+            <span class="stat-item"><span class="stat-value"><?= count($events) ?></span> <span class="stat-label">Events</span></span>
+        </div>
+        <div class="admin-stat-card admin-stat-card--single">
+            <span class="stat-item"><span class="stat-value"><?= count($countries) ?></span> <span class="stat-label">Countries</span></span>
+        </div>
+        <div class="admin-stat-card admin-stat-card--single">
+            <span class="stat-item"><span class="stat-value"><?= count($professions) ?></span> <span class="stat-label">Professions</span></span>
+        </div>
+        <div class="admin-stat-card admin-stat-card--single">
+            <span class="stat-item"><span class="stat-value"><?= count($worldEvents) ?></span> <span class="stat-label">World Events</span></span>
+        </div>
     </div>
 
     <section class="admin-section">
         <h2>Quick Links</h2>
         <nav class="admin-quick-links">
             <a href="events.php" class="admin-button">Manage Events</a>
-            <a href="events.php?action=add" class="admin-button">Add Event</a>
-            <a href="log.php" class="admin-button">Change Log</a>
+            <a href="countries.php" class="admin-button">Manage Countries</a>
+            <a href="professions.php" class="admin-button">Manage Professions</a>
+            <a href="world_events.php" class="admin-button">Manage World Events</a>
         </nav>
     </section>
 
     <section class="admin-section">
         <h2>Recent Activity</h2>
-        <?php if ($recent_log): ?>
+        <?php if ($recentLog): ?>
         <table class="admin-table">
             <thead>
                 <tr>
@@ -65,7 +73,7 @@ $recent_log = array_slice(array_reverse($log), 0, 5);
                 </tr>
             </thead>
             <tbody>
-            <?php foreach ($recent_log as $entry): ?>
+            <?php foreach ($recentLog as $entry): ?>
                 <tr>
                     <td><?= h($entry['timestamp'] ?? '') ?></td>
                     <td><?= h($entry['username'] ?? '') ?></td>

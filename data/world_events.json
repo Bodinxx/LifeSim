@@ -1,0 +1,12 @@
+[
+    {"id":"world_1","name":"Regional Peace Treaty","description":"A long-running regional dispute eases after several countries sign a peace treaty.","regions":["Europe","Asia"],"enabled":true},
+    {"id":"world_2","name":"Severe Coastal Storms","description":"Severe storms batter multiple coastal cities and dominate the world news cycle.","regions":["Global"],"enabled":true},
+    {"id":"world_3","name":"Scientific Breakthrough","description":"Researchers announce a major scientific breakthrough that sparks worldwide optimism.","regions":["Global"],"enabled":true},
+    {"id":"world_4","name":"International Sports Craze","description":"An international sporting event brings huge celebrations across many countries.","regions":["Global"],"enabled":true},
+    {"id":"world_5","name":"Trade Dispute","description":"A tense trade dispute causes uncertainty between several large economies.","regions":["North America","Asia"],"enabled":true},
+    {"id":"world_6","name":"Historic Election","description":"A landmark election result reshapes the political conversation around the world.","regions":["Global"],"enabled":true},
+    {"id":"world_7","name":"Major Earthquake Abroad","description":"A powerful earthquake in another country leads to a global wave of aid and solidarity.","regions":["Asia"],"enabled":true},
+    {"id":"world_8","name":"Space Mission Success","description":"A high-profile space mission succeeds and captures public imagination everywhere.","regions":["Global"],"enabled":true},
+    {"id":"world_9","name":"Border Tensions","description":"Border tensions rise between neighbouring countries, filling broadcasts with concern.","regions":["Europe","South America"],"enabled":true},
+    {"id":"world_10","name":"Global Arts Phenomenon","description":"A cultural phenomenon sweeps the globe as music, film, and fashion trends spread rapidly.","regions":["Global"],"enabled":true}
+]

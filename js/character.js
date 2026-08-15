@@ -1,83 +1,204 @@
 /**
  * LifeSim — Character data model
- *
- * Defines the character schema and factory functions.
- * All character objects must conform to this structure.
  */
 
 const Character = (() => {
     'use strict';
 
-    /** Default attribute values for a newborn character. */
     const DEFAULTS = {
-        health:      100,
-        happiness:   70,
+        health: 100,
+        happiness: 70,
         intelligence: 50,
-        appearance:  50,
-        discipline:  30,
-        stress:      0,
-        reputation:  50,
-        money:       0,
+        appearance: 50,
+        discipline: 30,
+        stress: 0,
+        reputation: 50,
+        money: 0,
         annualIncome: 0,
     };
 
-    /**
-     * Create a new character object.
-     * @param {object} overrides  Optional field overrides.
-     * @returns {object}
-     */
-    function create(overrides = {}) {
+    const GENDERS = ['male', 'female', 'non-binary'];
+
+    function baseCharacter() {
         const now = new Date().toISOString();
-        return Object.assign(
-            {
-                id:         generateUUID(),
-                name:       '',
-                pronouns:   'they/them',
-                birthplace: '',
-                age:        0,
-                lifeStage:  'infancy',
-
-                // Visible attributes
-                health:       DEFAULTS.health,
-                happiness:    DEFAULTS.happiness,
-                intelligence: DEFAULTS.intelligence,
-                appearance:   DEFAULTS.appearance,
-                stress:       DEFAULTS.stress,
-                reputation:   DEFAULTS.reputation,
-                money:        DEFAULTS.money,
-                annualIncome: DEFAULTS.annualIncome,
-
-                // Semi-hidden modifiers
-                discipline:   DEFAULTS.discipline,
-
-                // Biographical
-                education:    'none',          // none / primary / secondary / post-secondary
-                employment:   'unemployed',    // unemployed / part-time / full-time / retired
-
-                // Relationship records (populated in later phases)
-                relationships: [],
-
-                // Memories / consequence flags
-                memories: [],
-
-                // Event history (brief records)
-                eventHistory: [],
-
-                // Metadata
-                createdAt:    now,
-                updatedAt:    now,
+        return {
+            id: generateUUID(),
+            firstName: '',
+            lastName: '',
+            name: '',
+            gender: 'non-binary',
+            pronouns: 'they/them',
+            birthplace: '',
+            countryOfOrigin: '',
+            cityOfOrigin: '',
+            birthday: {
+                month: 1,
+                day: 1,
+                display: 'January 1',
             },
-            overrides
-        );
+            age: 0,
+            lifeStage: 'infancy',
+            health: DEFAULTS.health,
+            happiness: DEFAULTS.happiness,
+            intelligence: DEFAULTS.intelligence,
+            appearance: DEFAULTS.appearance,
+            discipline: DEFAULTS.discipline,
+            stress: DEFAULTS.stress,
+            reputation: DEFAULTS.reputation,
+            money: DEFAULTS.money,
+            annualIncome: DEFAULTS.annualIncome,
+            education: 'none',
+            employment: 'unemployed',
+            family: {
+                householdType: 'unknown',
+                parentIds: [],
+                siblingIds: [],
+            },
+            relations: [],
+            relationships: [],
+            memories: [],
+            eventHistory: [],
+            createdAt: now,
+            updatedAt: now,
+        };
     }
 
-    /**
-     * Determine the life stage label from age.
-     * @param {number} age
-     * @returns {string}
-     */
+    function create(overrides = {}) {
+        return normalize(Object.assign(baseCharacter(), overrides));
+    }
+
+    function normalize(raw = {}) {
+        const base = baseCharacter();
+        const ageValue = toWholeNumber(raw.age, 0);
+        const firstName = String(raw.firstName ?? '').trim();
+        const lastName = String(raw.lastName ?? '').trim();
+        const combinedName = [firstName, lastName].filter(Boolean).join(' ').trim();
+        const fallbackName = String(raw.name ?? '').trim();
+        const name = combinedName || fallbackName;
+        const gender = GENDERS.includes(raw.gender) ? raw.gender : 'non-binary';
+        const birthday = normalizeBirthday(raw.birthday);
+        const country = String(raw.countryOfOrigin ?? '').trim();
+        const city = String(raw.cityOfOrigin ?? '').trim();
+        const birthplace = String(raw.birthplace ?? '').trim() || [city, country].filter(Boolean).join(', ');
+        const relations = Array.isArray(raw.relations)
+            ? raw.relations.map(normalizeRelation)
+            : Array.isArray(raw.relationships)
+                ? raw.relationships.map(normalizeRelation)
+                : [];
+        const family = normalizeFamily(raw.family, relations);
+        const eventHistory = Array.isArray(raw.eventHistory)
+            ? raw.eventHistory
+                .filter((entry) => entry && typeof entry === 'object')
+                .map(normalizeHistoryEntry)
+            : [];
+
+        return Object.assign({}, base, raw, {
+            id: String(raw.id ?? base.id),
+            firstName: firstName || extractFirstName(name),
+            lastName: lastName || extractLastName(name),
+            name: name || [extractFirstName(fallbackName), extractLastName(fallbackName)].filter(Boolean).join(' ').trim(),
+            gender,
+            pronouns: String(raw.pronouns ?? pronounsForGender(gender)),
+            birthplace,
+            countryOfOrigin: country,
+            cityOfOrigin: city,
+            birthday,
+            age: ageValue,
+            lifeStage: String(raw.lifeStage ?? lifeStageFromAge(ageValue)) || lifeStageFromAge(ageValue),
+            health: clampScore(raw.health ?? base.health),
+            happiness: clampScore(raw.happiness ?? base.happiness),
+            intelligence: clampScore(raw.intelligence ?? base.intelligence),
+            appearance: clampScore(raw.appearance ?? base.appearance),
+            discipline: clampScore(raw.discipline ?? base.discipline),
+            stress: clampScore(raw.stress ?? base.stress),
+            reputation: clampScore(raw.reputation ?? base.reputation),
+            money: toWholeNumber(raw.money, 0),
+            annualIncome: toWholeNumber(raw.annualIncome, 0),
+            family,
+            relations,
+            relationships: relations,
+            memories: Array.isArray(raw.memories) ? raw.memories : [],
+            eventHistory,
+            createdAt: String(raw.createdAt ?? base.createdAt),
+            updatedAt: String(raw.updatedAt ?? base.updatedAt),
+        });
+    }
+
+    function normalizeBirthday(raw) {
+        const month = clampValue(toWholeNumber(raw?.month, 1), 1, 12);
+        const day = clampValue(toWholeNumber(raw?.day, 1), 1, 31);
+        return {
+            month,
+            day,
+            display: String(raw?.display ?? formatBirthday(month, day)),
+        };
+    }
+
+    function normalizeFamily(raw, relations) {
+        const family = raw && typeof raw === 'object' ? raw : {};
+        const parentIds = Array.isArray(family.parentIds) ? family.parentIds.map(String) : relations.filter((relation) => relation.relationType === 'parent').map((relation) => relation.id);
+        const siblingIds = Array.isArray(family.siblingIds) ? family.siblingIds.map(String) : relations.filter((relation) => relation.relationType === 'sibling').map((relation) => relation.id);
+        return {
+            householdType: String(family.householdType ?? 'unknown'),
+            parentIds,
+            siblingIds,
+        };
+    }
+
+    function normalizeRelation(raw = {}) {
+        const relationType = String(raw.relationType ?? raw.type ?? 'other');
+        const firstName = String(raw.firstName ?? '').trim();
+        const lastName = String(raw.lastName ?? '').trim();
+        const name = String(raw.name ?? [firstName, lastName].filter(Boolean).join(' ')).trim();
+        return {
+            id: String(raw.id ?? generateUUID()),
+            relationType,
+            label: String(raw.label ?? relationType),
+            firstName,
+            lastName,
+            name,
+            gender: GENDERS.includes(raw.gender) ? raw.gender : 'non-binary',
+            age: toWholeNumber(raw.age, 0),
+            alive: raw.alive !== false,
+            bond: clampScore(raw.bond ?? 50),
+            householdRole: String(raw.householdRole ?? ''),
+            professionId: String(raw.professionId ?? ''),
+            professionName: String(raw.professionName ?? ''),
+            professionLevel: toWholeNumber(raw.professionLevel, 0),
+            educationStage: String(raw.educationStage ?? 'none'),
+            healthStatus: String(raw.healthStatus ?? 'healthy'),
+            statusText: String(raw.statusText ?? ''),
+            species: String(raw.species ?? ''),
+            origin: String(raw.origin ?? ''),
+            notes: Array.isArray(raw.notes) ? raw.notes.map(String) : [],
+            metadata: raw.metadata && typeof raw.metadata === 'object' && !Array.isArray(raw.metadata) ? raw.metadata : {},
+        };
+    }
+
+    function createRelation(overrides = {}) {
+        return normalizeRelation(overrides);
+    }
+
+    function createHistoryEntry(age, text, category = 'life', extra = {}) {
+        return Object.assign({
+            age: toWholeNumber(age, 0),
+            text: String(text ?? '').trim(),
+            category: String(category || 'life'),
+            timestamp: new Date().toISOString(),
+        }, extra);
+    }
+
+    function normalizeHistoryEntry(entry = {}) {
+        return {
+            age: toWholeNumber(entry.age, 0),
+            text: String(entry.text ?? entry.description ?? '').trim(),
+            category: String(entry.category ?? 'life'),
+            timestamp: String(entry.timestamp ?? new Date().toISOString()),
+        };
+    }
+
     function lifeStageFromAge(age) {
-        if (age < 3)  return 'infancy';
+        if (age < 3) return 'infancy';
         if (age < 13) return 'childhood';
         if (age < 18) return 'adolescence';
         if (age < 30) return 'young adulthood';
@@ -86,40 +207,22 @@ const Character = (() => {
         return 'senior years';
     }
 
-    /**
-     * Clamp a numeric attribute between 0 and 100.
-     * @param {object} character
-     * @param {string} attr
-     * @param {number} delta
-     * @returns {object}  New character object (non-mutating).
-     */
     function adjustAttribute(character, attr, delta) {
-        const NUMERIC_ATTRS = [
-            'health', 'happiness', 'intelligence', 'appearance',
-            'discipline', 'stress', 'reputation',
-        ];
-        if (!NUMERIC_ATTRS.includes(attr)) {
+        const numericAttrs = ['health', 'happiness', 'intelligence', 'appearance', 'discipline', 'stress', 'reputation'];
+        if (!numericAttrs.includes(attr)) {
             return character;
         }
-        const current = character[attr] ?? 0;
-        const next    = Math.max(0, Math.min(100, current + delta));
-        return Object.assign({}, character, { [attr]: next });
+        const current = Number(character[attr] ?? 0);
+        return normalize(Object.assign({}, character, { [attr]: clampScore(current + delta), updatedAt: new Date().toISOString() }));
     }
 
-    /**
-     * Apply a consequence object to the character.
-     * Supported keys match the editable event consequence fields.
-     * @param {object} character
-     * @param {object} consequence
-     * @returns {object}
-     */
     function applyConsequence(character, consequence = {}) {
         if (!consequence || typeof consequence !== 'object' || Array.isArray(consequence)) {
             return character;
         }
 
-        const DIRECT_NUMERIC_ATTRS = ['money', 'annualIncome'];
-        let next = character;
+        const directNumericAttrs = ['money', 'annualIncome'];
+        const next = Object.assign({}, character);
         let changed = false;
 
         Object.entries(consequence).forEach(([attr, rawDelta]) => {
@@ -128,91 +231,128 @@ const Character = (() => {
                 return;
             }
 
-            if (DIRECT_NUMERIC_ATTRS.includes(attr)) {
+            if (directNumericAttrs.includes(attr)) {
                 const current = Number(next[attr] ?? 0);
-                next = Object.assign({}, next, { [attr]: current + delta });
+                next[attr] = current + delta;
                 changed = true;
                 return;
             }
 
-            const updated = adjustAttribute(next, attr, delta);
-            if (updated !== next) {
-                next = updated;
+            const numericAttrs = ['health', 'happiness', 'intelligence', 'appearance', 'discipline', 'stress', 'reputation'];
+            if (numericAttrs.includes(attr)) {
+                next[attr] = clampScore(Number(next[attr] ?? 0) + delta);
                 changed = true;
             }
         });
 
-        if (!changed) {
-            return character;
-        }
-
-        return Object.assign({}, next, { updatedAt: new Date().toISOString() });
+        return changed ? normalize(Object.assign({}, next, { updatedAt: new Date().toISOString() })) : normalize(character);
     }
 
-    /**
-     * Add a memory / flag to the character.
-     * @param {object} character
-     * @param {string} key   Short identifier for the memory.
-     * @param {*}      value Associated value (default true).
-     * @returns {object}  New character object.
-     */
     function addMemory(character, key, value = true) {
         const memories = [...(character.memories || [])];
-        const existing = memories.findIndex(m => m.key === key);
+        const existing = memories.findIndex((memory) => memory.key === key);
         if (existing >= 0) {
             memories[existing] = { key, value };
         } else {
             memories.push({ key, value });
         }
-        return Object.assign({}, character, { memories });
+        return normalize(Object.assign({}, character, { memories, updatedAt: new Date().toISOString() }));
     }
 
-    /**
-     * Check whether a character has a specific memory.
-     * @param {object} character
-     * @param {string} key
-     * @returns {boolean}
-     */
     function hasMemory(character, key) {
-        return (character.memories || []).some(m => m.key === key);
+        return (character.memories || []).some((memory) => memory.key === key);
     }
 
-    /**
-     * Append a brief event record to the character's history.
-     * @param {object} character
-     * @param {string} description
-     * @returns {object}  New character object.
-     */
-    function recordEvent(character, description) {
-        const entry = {
-            age: character.age,
-            description,
-            timestamp: new Date().toISOString(),
-        };
+    function recordEvent(character, description, category = 'life', extra = {}) {
+        const entry = createHistoryEntry(character.age, description, category, extra);
         const eventHistory = [...(character.eventHistory || []), entry];
-        return Object.assign({}, character, { eventHistory, updatedAt: entry.timestamp });
+        return normalize(Object.assign({}, character, { eventHistory, updatedAt: entry.timestamp }));
     }
 
-    /** Crypto-quality UUID v4. */
+    function appendHistoryEntries(character, entries = []) {
+        const next = normalize(character);
+        const historyEntries = [];
+        entries.forEach((entry) => {
+            if (!entry || typeof entry !== 'object') {
+                return;
+            }
+            const text = String(entry.text ?? '').trim();
+            if (!text) {
+                return;
+            }
+            historyEntries.push(createHistoryEntry(entry.age ?? next.age, text, entry.category ?? 'life', entry));
+        });
+        if (!historyEntries.length) {
+            return next;
+        }
+        return normalize(Object.assign({}, next, {
+            eventHistory: [...(next.eventHistory || []), ...historyEntries],
+            updatedAt: historyEntries[historyEntries.length - 1].timestamp,
+        }));
+    }
+
     function generateUUID() {
         if (typeof crypto !== 'undefined' && crypto.randomUUID) {
             return crypto.randomUUID();
         }
-        // Fallback for environments without crypto.randomUUID
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-            const r = (Math.random() * 16) | 0;
-            const v = c === 'x' ? r : (r & 0x3) | 0x8;
-            return v.toString(16);
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (char) => {
+            const random = (Math.random() * 16) | 0;
+            const value = char === 'x' ? random : (random & 0x3) | 0x8;
+            return value.toString(16);
         });
     }
 
+    function pronounsForGender(gender) {
+        if (gender === 'male') return 'he/him';
+        if (gender === 'female') return 'she/her';
+        return 'they/them';
+    }
+
+    function extractFirstName(name) {
+        return String(name ?? '').trim().split(/\s+/).filter(Boolean)[0] || '';
+    }
+
+    function extractLastName(name) {
+        const parts = String(name ?? '').trim().split(/\s+/).filter(Boolean);
+        return parts.length > 1 ? parts.slice(1).join(' ') : '';
+    }
+
+    function clampScore(value) {
+        return clampValue(toWholeNumber(value, 0), 0, 100);
+    }
+
+    function clampValue(value, min, max) {
+        return Math.max(min, Math.min(max, value));
+    }
+
+    function toWholeNumber(value, fallback) {
+        const number = Number(value);
+        return Number.isFinite(number) ? Math.round(number) : fallback;
+    }
+
+    function formatBirthday(month, day) {
+        const monthNames = [
+            'January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December',
+        ];
+        return `${monthNames[month - 1] || monthNames[0]} ${day}`;
+    }
+
     return {
+        DEFAULTS,
+        GENDERS,
         create,
+        normalize,
+        createRelation,
+        createHistoryEntry,
+        appendHistoryEntries,
         lifeStageFromAge,
         adjustAttribute,
         applyConsequence,
         addMemory,
         hasMemory,
         recordEvent,
+        pronounsForGender,
+        formatBirthday,
     };
 })();
