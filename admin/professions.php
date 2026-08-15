@@ -106,21 +106,35 @@ usort($professions, fn($a, $b) => strcasecmp($a['name'] ?? '', $b['name'] ?? '')
 
         <fieldset class="choices-fieldset">
             <legend>Career levels</legend>
-            <div id="levels-list">
+            <table class="levels-table" id="levels-table">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Min wage</th>
+                        <th>Max wage</th>
+                        <th>Education requirement</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="levels-list">
             <?php foreach ($profession['levels'] as $level): ?>
-                <div class="choice-row">
-                    <label>Title</label>
-                    <input type="text" name="level_title[]" value="<?= h($level['title']) ?>">
-                    <label>Min wage</label>
-                    <input type="text" name="level_min_wage[]" value="<?= h((string)$level['minWage']) ?>">
-                    <label>Max wage</label>
-                    <input type="text" name="level_max_wage[]" value="<?= h((string)$level['maxWage']) ?>">
-                    <label>Education requirement</label>
-                    <input type="text" name="level_education[]" value="<?= h($level['education']) ?>">
-                    <button type="button" class="remove-choice admin-button-small" onclick="removeLevel(this)">Remove</button>
-                </div>
+                <tr class="choice-row">
+                    <td><input type="text" name="level_title[]" value="<?= h($level['title']) ?>"></td>
+                    <td><input type="text" name="level_min_wage[]" value="<?= h((string)$level['minWage']) ?>"></td>
+                    <td><input type="text" name="level_max_wage[]" value="<?= h((string)$level['maxWage']) ?>"></td>
+                    <td>
+                        <select name="level_education[]">
+                            <option value="">— none —</option>
+                            <?php foreach (['secondary','academy','apprenticeship','agricultural training','law degree','medical school','teaching degree','tertiary','trade certification'] as $edu): ?>
+                            <option value="<?= h($edu) ?>"<?= $level['education'] === $edu ? ' selected' : '' ?>><?= h(ucfirst($edu)) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </td>
+                    <td><button type="button" class="remove-choice admin-button-small" onclick="removeLevel(this)">Remove</button></td>
+                </tr>
             <?php endforeach; ?>
-            </div>
+                </tbody>
+            </table>
             <button type="button" id="add-level" class="admin-button-small">+ Add Level</button>
         </fieldset>
         <div class="form-actions">
@@ -130,20 +144,26 @@ usort($professions, fn($a, $b) => strcasecmp($a['name'] ?? '', $b['name'] ?? '')
     </form>
     <script>
     (function () {
+        const educationOptions = ['secondary','academy','apprenticeship','agricultural training','law degree','medical school','teaching degree','tertiary','trade certification'];
+        function buildEducationSelect(selected) {
+            let opts = '<option value="">\u2014 none \u2014</option>';
+            educationOptions.forEach(function(edu) {
+                const cap = edu.charAt(0).toUpperCase() + edu.slice(1);
+                opts += `<option value="${edu}"${edu === selected ? ' selected' : ''}>${cap}</option>`;
+            });
+            return `<select name="level_education[]">${opts}</select>`;
+        }
+
         const list = document.getElementById('levels-list');
         document.getElementById('add-level')?.addEventListener('click', function () {
-            const row = document.createElement('div');
+            const row = document.createElement('tr');
             row.className = 'choice-row';
             row.innerHTML = `
-                <label>Title</label>
-                <input type="text" name="level_title[]" value="">
-                <label>Min wage</label>
-                <input type="text" name="level_min_wage[]" value="0">
-                <label>Max wage</label>
-                <input type="text" name="level_max_wage[]" value="0">
-                <label>Education requirement</label>
-                <input type="text" name="level_education[]" value="">
-                <button type="button" class="remove-choice admin-button-small" onclick="removeLevel(this)">Remove</button>
+                <td><input type="text" name="level_title[]" value=""></td>
+                <td><input type="text" name="level_min_wage[]" value="0"></td>
+                <td><input type="text" name="level_max_wage[]" value="0"></td>
+                <td>${buildEducationSelect('')}</td>
+                <td><button type="button" class="remove-choice admin-button-small" onclick="removeLevel(this)">Remove</button></td>
             `;
             list.appendChild(row);
         });
