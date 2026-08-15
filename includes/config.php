@@ -4,7 +4,7 @@
  */
 
 define('LIFESIM_VERSION', '0.1.0');
-define('SAVE_FORMAT_VERSION', 1);
+define('SAVE_FORMAT_VERSION', 2);
 
 // Paths
 define('ROOT_PATH', dirname(__DIR__));
@@ -17,8 +17,12 @@ define('ADMIN_CREDENTIALS_FILE', DATA_PATH . '/admin_credentials.json');
 // Admin change log file
 define('ADMIN_LOG_FILE', DATA_PATH . '/admin_log.json');
 
-// Events data file
+// Content data files
 define('EVENTS_FILE', DATA_PATH . '/events.json');
+define('COUNTRIES_FILE', DATA_PATH . '/countries.json');
+define('CITIES_FILE', DATA_PATH . '/cities.json');
+define('PROFESSIONS_FILE', DATA_PATH . '/professions.json');
+define('WORLD_EVENTS_FILE', DATA_PATH . '/world_events.json');
 
 // Default admin username
 define('ADMIN_DEFAULT_USERNAME', 'admin');

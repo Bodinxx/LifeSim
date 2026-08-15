@@ -1,0 +1,12 @@
+[
+    {"code":"ARG","name":"Argentina","enabled":true},
+    {"code":"AUS","name":"Australia","enabled":true},
+    {"code":"BRA","name":"Brazil","enabled":true},
+    {"code":"CAN","name":"Canada","enabled":true},
+    {"code":"DEU","name":"Germany","enabled":true},
+    {"code":"ESP","name":"Spain","enabled":true},
+    {"code":"FRA","name":"France","enabled":true},
+    {"code":"IND","name":"India","enabled":true},
+    {"code":"JPN","name":"Japan","enabled":true},
+    {"code":"USA","name":"United States","enabled":true}
+]

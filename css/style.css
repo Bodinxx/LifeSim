@@ -479,3 +479,148 @@ button {
         padding: 2rem;
     }
 }
+
+
+.character-panel__origin {
+    color: #718096;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+}
+
+.attribute-item--bar {
+    gap: 0.55rem;
+}
+
+.attribute-item__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.attribute-bar {
+    position: relative;
+    height: 0.7rem;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.attribute-bar__fill {
+    display: block;
+    height: 100%;
+    width: 0;
+    background: linear-gradient(90deg, #63b3ed, #48bb78);
+    border-radius: inherit;
+    transition: width 0.2s ease;
+}
+
+.attribute-item[data-attribute="stress"] .attribute-bar__fill {
+    background: linear-gradient(90deg, #48bb78, #e94560);
+}
+
+.event-feed {
+    display: flex;
+    flex-direction: column;
+}
+
+.event-log {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-height: 360px;
+    overflow-y: auto;
+    padding-right: 0.35rem;
+}
+
+.event-log__age-group {
+    background: #0f3460;
+    border-radius: 8px;
+    padding: 0.85rem 1rem;
+}
+
+.event-log__age {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #9ae6b4;
+    margin-bottom: 0.5rem;
+}
+
+.event-log__list {
+    margin: 0;
+    padding-left: 1.2rem;
+    color: #e2e8f0;
+}
+
+.event-log__list li + li {
+    margin-top: 0.35rem;
+}
+
+.event-log__item--world {
+    color: #f6e05e;
+}
+
+.event-log__item--relation {
+    color: #cbd5e0;
+}
+
+.modal--wide {
+    max-width: 720px;
+}
+
+.modal__title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.creation-summary {
+    display: grid;
+    gap: 1rem;
+}
+
+.creation-summary__grid {
+    display: grid;
+    gap: 1rem;
+}
+
+@media (min-width: 640px) {
+    .creation-summary__grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+.creation-card {
+    background: #0f3460;
+    border: 1px solid #234069;
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.creation-card h3 {
+    margin-bottom: 0.6rem;
+    font-size: 0.95rem;
+    color: #9ae6b4;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.creation-card ul {
+    margin: 0;
+    padding-left: 1.2rem;
+    color: #e2e8f0;
+}
+
+.creation-card li + li {
+    margin-top: 0.35rem;
+}
+
+.event-overlay__choices {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
