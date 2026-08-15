@@ -106,6 +106,9 @@ usort($professions, fn($a, $b) => strcasecmp($a['name'] ?? '', $b['name'] ?? '')
 
         <fieldset class="choices-fieldset">
             <legend>Career levels</legend>
+            <?php
+            $educationLevels = ['secondary','academy','apprenticeship','agricultural training','law degree','medical school','teaching degree','tertiary','trade certification'];
+            ?>
             <table class="levels-table" id="levels-table">
                 <thead>
                     <tr>
@@ -123,10 +126,11 @@ usort($professions, fn($a, $b) => strcasecmp($a['name'] ?? '', $b['name'] ?? '')
                     <td><input type="text" name="level_min_wage[]" value="<?= h((string)$level['minWage']) ?>"></td>
                     <td><input type="text" name="level_max_wage[]" value="<?= h((string)$level['maxWage']) ?>"></td>
                     <td>
+                        <?php $currentEdu = $level['education'] ?? ''; ?>
                         <select name="level_education[]">
-                            <option value="">— none —</option>
-                            <?php foreach (['secondary','academy','apprenticeship','agricultural training','law degree','medical school','teaching degree','tertiary','trade certification'] as $edu): ?>
-                            <option value="<?= h($edu) ?>"<?= $level['education'] === $edu ? ' selected' : '' ?>><?= h(ucfirst($edu)) ?></option>
+                            <option value=""<?= $currentEdu === '' || !in_array($currentEdu, $educationLevels, true) ? ' selected' : '' ?>>— none —</option>
+                            <?php foreach ($educationLevels as $edu): ?>
+                            <option value="<?= h($edu) ?>"<?= $currentEdu === $edu ? ' selected' : '' ?>><?= h(ucfirst($edu)) ?></option>
                             <?php endforeach; ?>
                         </select>
                     </td>
@@ -144,9 +148,10 @@ usort($professions, fn($a, $b) => strcasecmp($a['name'] ?? '', $b['name'] ?? '')
     </form>
     <script>
     (function () {
-        const educationOptions = ['secondary','academy','apprenticeship','agricultural training','law degree','medical school','teaching degree','tertiary','trade certification'];
+        const educationOptions = <?= json_encode($educationLevels) ?>;
         function buildEducationSelect(selected) {
-            let opts = '<option value="">\u2014 none \u2014</option>';
+            const noneSelected = selected === '' || !educationOptions.includes(selected);
+            let opts = `<option value=""${noneSelected ? ' selected' : ''}>\u2014 none \u2014</option>`;
             educationOptions.forEach(function(edu) {
                 const cap = edu.charAt(0).toUpperCase() + edu.slice(1);
                 opts += `<option value="${edu}"${edu === selected ? ' selected' : ''}>${cap}</option>`;
