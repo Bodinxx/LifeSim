@@ -52,7 +52,12 @@ if ($action === 'edit' && $id !== '') {
 
 $saved = !empty($_GET['saved']);
 $professions = get_all_professions();
-usort($professions, fn($a, $b) => strcasecmp($a['name'] ?? '', $b['name'] ?? ''));
+usort($professions, function ($a, $b) {
+    $cat = strcasecmp($a['category'] ?? '', $b['category'] ?? '');
+    return $cat !== 0 ? $cat : strcasecmp($a['name'] ?? '', $b['name'] ?? '');
+});
+$educationTypes = get_enabled_education_types();
+usort($educationTypes, fn($a, $b) => strcasecmp($a['label'] ?? '', $b['label'] ?? ''));
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -75,7 +80,11 @@ usort($professions, fn($a, $b) => strcasecmp($a['name'] ?? '', $b['name'] ?? '')
     <table class="admin-table">
         <thead><tr><th>Name</th><th>Category</th><th>Levels</th><th>Status</th><th>Actions</th></tr></thead>
         <tbody>
-        <?php foreach ($professions as $item): ?>
+        <?php $currentCategory = null; foreach ($professions as $item): ?>
+            <?php if ($item['category'] !== $currentCategory): ?>
+                <?php $currentCategory = $item['category']; ?>
+                <tr><th colspan="5" class="admin-table-category"><?= h($currentCategory) ?></th></tr>
+            <?php endif; ?>
             <tr>
                 <td><?= h($item['name']) ?></td>
                 <td><?= h($item['category']) ?></td>
@@ -101,14 +110,20 @@ usort($professions, fn($a, $b) => strcasecmp($a['name'] ?? '', $b['name'] ?? '')
         <label for="category">Category <span class="required">*</span></label>
         <input type="text" id="category" name="category" required value="<?= h($profession['category']) ?>">
         <label for="education">Default education</label>
-        <input type="text" id="education" name="education" value="<?= h($profession['education']) ?>">
+        <?php $currentDefaultEdu = $profession['education'] ?? ''; $defaultEduInList = array_filter($educationTypes, fn($t) => $t['id'] === $currentDefaultEdu); ?>
+        <select id="education" name="education">
+            <option value=""<?= $currentDefaultEdu === '' ? ' selected' : '' ?>>— none —</option>
+            <?php foreach ($educationTypes as $eduType): ?>
+            <option value="<?= h($eduType['id']) ?>"<?= $currentDefaultEdu === $eduType['id'] ? ' selected' : '' ?>><?= h($eduType['label']) ?></option>
+            <?php endforeach; ?>
+            <?php if ($currentDefaultEdu !== '' && !$defaultEduInList): ?>
+            <option value="<?= h($currentDefaultEdu) ?>" selected><?= h($currentDefaultEdu) ?> (disabled)</option>
+            <?php endif; ?>
+        </select>
         <label class="checkbox-label"><input type="checkbox" name="enabled" value="1" <?= !empty($profession['enabled']) ? 'checked' : '' ?>> Enabled</label>
 
         <fieldset class="choices-fieldset">
             <legend>Career levels</legend>
-            <?php
-            $educationLevels = ['secondary','academy','apprenticeship','agricultural training','law degree','medical school','teaching degree','tertiary','trade certification'];
-            ?>
             <table class="levels-table" id="levels-table">
                 <thead>
                     <tr>
@@ -126,12 +141,15 @@ usort($professions, fn($a, $b) => strcasecmp($a['name'] ?? '', $b['name'] ?? '')
                     <td><input type="text" name="level_min_wage[]" value="<?= h((string)$level['minWage']) ?>"></td>
                     <td><input type="text" name="level_max_wage[]" value="<?= h((string)$level['maxWage']) ?>"></td>
                     <td>
-                        <?php $currentEdu = $level['education'] ?? ''; ?>
+                        <?php $currentEdu = $level['education'] ?? ''; $levelEduInList = array_filter($educationTypes, fn($t) => $t['id'] === $currentEdu); ?>
                         <select name="level_education[]">
-                            <option value=""<?= $currentEdu === '' || !in_array($currentEdu, $educationLevels, true) ? ' selected' : '' ?>>— none —</option>
-                            <?php foreach ($educationLevels as $edu): ?>
-                            <option value="<?= h($edu) ?>"<?= $currentEdu === $edu ? ' selected' : '' ?>><?= h(ucfirst($edu)) ?></option>
+                            <option value=""<?= $currentEdu === '' ? ' selected' : '' ?>>— none —</option>
+                            <?php foreach ($educationTypes as $eduType): ?>
+                            <option value="<?= h($eduType['id']) ?>"<?= $currentEdu === $eduType['id'] ? ' selected' : '' ?>><?= h($eduType['label']) ?></option>
                             <?php endforeach; ?>
+                            <?php if ($currentEdu !== '' && !$levelEduInList): ?>
+                            <option value="<?= h($currentEdu) ?>" selected><?= h($currentEdu) ?> (disabled)</option>
+                            <?php endif; ?>
                         </select>
                     </td>
                     <td><button type="button" class="remove-choice admin-button-small" onclick="removeLevel(this)">Remove</button></td>
@@ -148,13 +166,12 @@ usort($professions, fn($a, $b) => strcasecmp($a['name'] ?? '', $b['name'] ?? '')
     </form>
     <script>
     (function () {
-        const educationOptions = <?= json_encode($educationLevels) ?>;
+        const educationOptions = <?= json_encode(array_values(array_map(fn($t) => ['id' => $t['id'], 'label' => $t['label']], $educationTypes))) ?>;
         function buildEducationSelect(selected) {
-            const noneSelected = selected === '' || !educationOptions.includes(selected);
+            const noneSelected = selected === '' || !educationOptions.some(function(t) { return t.id === selected; });
             let opts = `<option value=""${noneSelected ? ' selected' : ''}>\u2014 none \u2014</option>`;
-            educationOptions.forEach(function(edu) {
-                const cap = edu.charAt(0).toUpperCase() + edu.slice(1);
-                opts += `<option value="${edu}"${edu === selected ? ' selected' : ''}>${cap}</option>`;
+            educationOptions.forEach(function(t) {
+                opts += `<option value="${t.id}"${t.id === selected ? ' selected' : ''}>${t.label}</option>`;
             });
             return `<select name="level_education[]">${opts}</select>`;
         }

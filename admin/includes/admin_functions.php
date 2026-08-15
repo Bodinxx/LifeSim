@@ -8,11 +8,12 @@ require_once dirname(__DIR__, 2) . '/includes/functions.php';
 function content_files(): array
 {
     return [
-        'events'       => EVENTS_FILE,
-        'countries'    => COUNTRIES_FILE,
-        'cities'       => CITIES_FILE,
-        'professions'  => PROFESSIONS_FILE,
-        'world_events' => WORLD_EVENTS_FILE,
+        'events'          => EVENTS_FILE,
+        'countries'       => COUNTRIES_FILE,
+        'cities'          => CITIES_FILE,
+        'professions'     => PROFESSIONS_FILE,
+        'world_events'    => WORLD_EVENTS_FILE,
+        'education_types' => EDUCATION_TYPES_FILE,
     ];
 }
 
@@ -654,4 +655,124 @@ function world_event_from_post(string $id = ''): array
     $event['enabled'] = isset($_POST['enabled']);
     $event = normalise_world_event($event);
     return ['world_event' => $event, 'errors' => validate_world_event($event)];
+}
+
+// ── Education types ──────────────────────────────────────────────────────────
+
+function blank_education_type(): array
+{
+    return ['id' => '', 'label' => '', 'enabled' => true];
+}
+
+function normalise_education_type(array $type): array
+{
+    return [
+        'id'      => trim((string)($type['id'] ?? '')),
+        'label'   => trim((string)($type['label'] ?? '')),
+        'enabled' => normalise_enabled($type),
+    ];
+}
+
+function get_all_education_types(): array
+{
+    $types = read_json_file(EDUCATION_TYPES_FILE, []);
+    return array_map('normalise_education_type', array_values(array_filter(is_array($types) ? $types : [], 'is_array')));
+}
+
+function get_enabled_education_types(): array
+{
+    return array_values(array_filter(get_all_education_types(), static fn(array $type): bool => !empty($type['enabled'])));
+}
+
+function save_education_types(array $types): bool
+{
+    return write_json_file(EDUCATION_TYPES_FILE, array_values(array_map('normalise_education_type', $types)));
+}
+
+function find_education_type(string $id): ?array
+{
+    foreach (get_all_education_types() as $type) {
+        if (($type['id'] ?? '') === $id) {
+            return $type;
+        }
+    }
+    return null;
+}
+
+function validate_education_type(array $type): array
+{
+    $errors = [];
+    if ($type['id'] === '') {
+        $errors[] = 'Education type identifier is required.';
+    }
+    if ($type['label'] === '') {
+        $errors[] = 'Education type label is required.';
+    }
+    return $errors;
+}
+
+function upsert_education_type(array $type, string $originalId = ''): array
+{
+    $type = normalise_education_type($type);
+    $errors = validate_education_type($type);
+    if ($errors) {
+        return $errors;
+    }
+
+    $types = get_all_education_types();
+    $matchId = trim($originalId) !== '' ? trim($originalId) : $type['id'];
+    $found = false;
+    foreach ($types as &$existing) {
+        if ($existing['id'] === $matchId) {
+            $existing = $type;
+            $found = true;
+            break;
+        }
+    }
+    unset($existing);
+
+    if (!$found) {
+        // Check for duplicate id
+        foreach ($types as $existing) {
+            if ($existing['id'] === $type['id']) {
+                return ['An education type with that identifier already exists.'];
+            }
+        }
+        $types[] = $type;
+    }
+
+    save_education_types($types);
+    return [];
+}
+
+function toggle_education_type(string $id): bool
+{
+    $types = get_all_education_types();
+    foreach ($types as &$type) {
+        if ($type['id'] === $id) {
+            $type['enabled'] = !($type['enabled'] ?? true);
+            return save_education_types($types);
+        }
+    }
+    return false;
+}
+
+function delete_education_type(string $id): bool
+{
+    $types = get_all_education_types();
+    $filtered = array_values(array_filter($types, static fn(array $t): bool => $t['id'] !== $id));
+    if (count($filtered) === count($types)) {
+        return false;
+    }
+    return save_education_types($filtered);
+}
+
+function education_type_from_post(string $originalId = ''): array
+{
+    $type = blank_education_type();
+    // When editing, always use the original ID (ignore any tampered POST value).
+    $type['id'] = $originalId !== '' ? $originalId : trim($_POST['id'] ?? '');
+    $type['label'] = trim($_POST['label'] ?? '');
+    $type['enabled'] = isset($_POST['enabled']);
+    return ['type' => $type, 'errors' => validate_education_type($type), 'original_id' => $originalId];
 }

@@ -408,6 +408,16 @@
     background: #16213e;
 }
 
+.admin-table-category {
+    background: #0f172a;
+    color: #63b3ed;
+    font-weight: 700;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding-top: 0.6rem;
+}
+
 .admin-actions {
     display: flex;
     gap: 0.4rem;
